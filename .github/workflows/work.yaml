@@ -1,51 +1,49 @@
-name: JD_Sign_Action
+name: mailer_sign
 
 on:
   repository_dispatch:
-  release:
-    types: published
-  # push:
-  #   branches:
-  #     - master
+  workflow_dispatch:
   schedule:
-    - cron: 0 20 * * *
+    - cron: '0 6 * * *'
   watch:
     types: started
     
 env:
-  JD_COOKIE: ${{ secrets.JD_COOKIE }}
-  PUSH_KEY: ${{ secrets.PUSH_KEY }}
-  MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
-  MYSQL_USER: ${{ secrets.MYSQL_USER }}
-  MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-  MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
-  MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+  FREEOK_ACCOUNTS: ${{ secrets.FREEOK_ACCOUNTS }}
+  FREEOK_COOKIES: ${{ secrets.FREEOK_COOKIES }}
   UPLOAD_BESULT_DIR: true
 
 jobs:
     build:
         runs-on: ubuntu-latest
-
+        timeout-minutes: 3
         steps:
             - name: Checkout codes
-              uses: actions/checkout@v2
-              
+              uses: actions/checkout@v2 
             - name: Use Node.js
               uses: actions/setup-node@v1
               with:
                 node-version: '12.x'
-                
+            - name: Cache node_modules
+              uses: actions/cache@v2 # 使用 GitHub 官方的缓存 Action。
+              env:
+                cache-name: cache-node-modules
+              with:
+                path: node_modules
+                key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('package-lock.json') }} # 使用 package-lock.json 的 Hash 作为缓存的 key。也可以使用 package.json 代替    
             - name: Run install
               run: npm install
-              
             - name: Run Script
-              run: node jd_sign.js
-                
-            - name: Upload result file
-              uses: actions/upload-artifact@master
-              if: env.UPLOAD_BESULT_DIR == 'true'
-              with:
-                name: result
-                path: ./*.txt
+              run: node 163login.js # > report.txt    
+            - name: Commit report
+              run: |
+                echo  "163login运行时间：`date '+%Y%m%d %H%M%S'`" > report.txt 
+                git config --global user.name 'eroslp99'
+                git config --global user.email 'eroslp99@gmail.com'
+                git add .
+                git commit -m "Automated report $(date '+%Y/%m/%d')"
+                git push         
+           
+              
 
 
