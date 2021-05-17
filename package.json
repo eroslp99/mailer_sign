@@ -1,21 +1,21 @@
 {
-  "name": "jd_sign_action",
+  "name": "mailer_sign",
   "version": "1.0.0",
-  "description": "京东签到",
+  "description": "邮箱签到",
   "main": "jd_sign.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ZHDeveloper/JD_Sign_Action.git"
+    "url": "https://github.com/eroslp99/mailer_sign.git"
   },
   "author": "ZhiHua",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ZHDeveloper/JD_Sign_Action/issues"
+    "url": "https://github.com/eroslp99/mailer_sign/issues"
   },
-  "homepage": "https://github.com/ZHDeveloper/JD_Sign_Action#readme",
+  "homepage": "https://github.com/eroslp99/mailer_sign",
   "dependencies": {
     "@actions/core": "^1.2.7",
     "@actions/github": "^4.0.0",
