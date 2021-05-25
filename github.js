@@ -31,24 +31,24 @@ async function  main () {
     let body =  await page.$eval('body', el => el.innerText);
     if (body.includes("免费白嫖公益v2ray机场订阅地址自助获取")){
         console.log("已存在！");
-        return Promise.resolve('已存在！');
+    }else{
+        await page.goto('https://github.com/freefq/free/issues/new');
+        await myfuns.Sleep(1000);
+        await page.waitForSelector("#issue_title");
+        await myfuns.Sleep(1000);
+        await page.type("#issue_title",'免费白嫖公益v2ray机场订阅地址自助获取');
+        let content = `
+        免费白嫖公益v2ray机场订阅地址自助获取
+        https://www.aiboboxx.ml/post/free-v2ray/
+          `;
+        await page.type("#issue_body",content);
+        await page.evaluate('document.querySelector("#new_issue > div > div > div.flex-shrink-0.col-12.col-md-9.mb-4.mb-md-0 > div > div.timeline-comment.color-bg-canvas.hx_comment-box--tip > div > div.flex-items-center.flex-justify-end.mx-2.mb-2.px-0.d-none.d-md-flex > button").click()');
+        await page.waitForFunction(
+            (selecter) => document.querySelector(selecter).innerText.includes("免费白嫖公益v2ray机场订阅地址自助获取"),
+            {timeout:6000},
+            'body'
+          ).then(()=>{console.log("发布成功!");});
     }
-    await page.goto('https://github.com/freefq/free/issues/new');
-    await myfuns.Sleep(1000);
-    await page.waitForSelector("#issue_title");
-    await myfuns.Sleep(1000);
-    await page.type("#issue_title",'免费白嫖公益v2ray机场订阅地址自助获取');
-    let content = `
-    免费白嫖公益v2ray机场订阅地址自助获取
-    https://www.aiboboxx.ml/post/free-v2ray/
-    `;
-    await page.type("#issue_body",content);
-    await page.evaluate('document.querySelector("#new_issue > div > div > div.flex-shrink-0.col-12.col-md-9.mb-4.mb-md-0 > div > div.timeline-comment.color-bg-canvas.hx_comment-box--tip > div > div.flex-items-center.flex-justify-end.mx-2.mb-2.px-0.d-none.d-md-flex > button").click()');
-    await page.waitForFunction(
-        (selecter) => document.querySelector(selecter).innerText.includes("免费白嫖公益v2ray机场订阅地址自助获取"),
-        {timeout:6000},
-        'body'
-      ).then(()=>{console.log("发布成功!");});
     //await page.click("#_mail_icon_21_182");
     //await myfuns.Sleep(5000);
     cookies = await page.cookies();
