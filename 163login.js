@@ -23,10 +23,9 @@ async function  main () {
     });
 
     let cookies = {};
-
-    let allck = JSON.parse(fs.readFileSync('./allck.json', 'utf8'));
-    //let cookies = JSON.parse(fs.readFileSync('./cookie.txt', 'utf8'));
-    cookies = allck['aiboboxx@163.com'];
+    //let allck = JSON.parse(fs.readFileSync('./allck.json', 'utf8'));
+    cookies = JSON.parse(fs.readFileSync('./aiboboxx@163.com.json', 'utf8'));
+    //cookies = allck['aiboboxx@163.com'];
     await page.setCookie(...cookies);
     await page.goto('https://mail.163.com/');
     await myfuns.Sleep(1000);
@@ -41,9 +40,9 @@ async function  main () {
     //await page.click("#_mail_icon_21_182");
     //await myfuns.Sleep(5000);
     cookies = await page.cookies();
-    allck['aiboboxx@163.com'] = cookies;
+    //allck['aiboboxx@163.com'] = cookies;
     //sqlite.close();
-    fs.writeFileSync('./allck.json', JSON.stringify(allck, null, '\t'))
+    fs.writeFileSync('./aiboboxx@163.com.json', JSON.stringify(cookies, null, '\t'))
     if ( runId?true:false ) await browser.close();
 }
 main();
