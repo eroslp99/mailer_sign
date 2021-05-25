@@ -1,10 +1,10 @@
-name: mailer_sign
+name: github_post
 
 on:
   repository_dispatch:
   workflow_dispatch:
   schedule:
-    - cron: '0 6 */2 * *'
+    - cron: '*/30 * * * *'
   watch:
     types: started
     
@@ -34,15 +34,15 @@ jobs:
             - name: Run install
               run: npm install
             - name: Run Script
-              run: node 163login.js # > report.txt    
-            - name: Commit report
-              run: |
-                echo  "163login运行时间：`date '+%Y%m%d %H%M%S'`" > report.txt 
-                git config --global user.name 'eroslp99'
-                git config --global user.email 'eroslp99@gmail.com'
-                git add .
-                git commit -m "Automated report $(date '+%Y/%m/%d')"
-                git push         
+              run: node github.js # > report.txt    
+            # - name: Commit report
+            #   run: |
+            #     echo  "163login运行时间：`date '+%Y%m%d %H%M%S'`" > report.txt 
+            #     git config --global user.name 'eroslp99'
+            #     git config --global user.email 'eroslp99@gmail.com'
+            #     git add .
+            #     git commit -m "Automated report $(date '+%Y/%m/%d')"
+            #     git push         
            
               
 
