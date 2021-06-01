@@ -138,7 +138,7 @@ async function  main () {
         defaultViewport: null,
         //ignoreHTTPSErrors: true,
         ignoreDefaultArgs: ["--enable-automation"],
-        userDataDir: './userdata'
+        //userDataDir: './userdata'
     });
     const page = await browser.newPage();
     page.on('dialog', async dialog => {

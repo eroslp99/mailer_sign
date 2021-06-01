@@ -27,7 +27,7 @@ async function  autoPost (page) {
               console.log ('设置cookie按钮不存在');
               return Promise.reject(new Error('设置cookie按钮不存在'));
           });
-          await myfuns.Sleep(1000);
+          await myfuns.Sleep(3000);
           await page.click(selecter);
           await page.waitForFunction(
               (selecter) => document.querySelector(selecter).innerText.includes("Cookie集"),
@@ -43,7 +43,7 @@ async function  autoPost (page) {
                     console.log ('设置cookie按钮不存在');
                     return Promise.reject(new Error('设置cookie按钮不存在'));
                 });
-                await myfuns.Sleep(1000);
+                await myfuns.Sleep(3000);
                 await page.click(selecter);
                 await page.waitForFunction(
                     (selecter) => document.querySelector(selecter).innerText.includes("Cookie集"),
@@ -62,27 +62,52 @@ async function  autoPost (page) {
           let i = 0;
           for (let frame of frames){
               i++;
-              //console.log(frames.length,frame.url(),frame.setContent(i));//查看得到的frame列表数量
-              //console.log(frame.url());
               if (frame.url().includes('https://newassets.hcaptcha.com/captcha/v1/c4ed6d3/static/hcaptcha-checkbox.html')){
-                  await frame.waitForSelector('#checkbox',{timeout:20000}).catch(error => console.log('#checkbox: ', error.message));
+                  await frame.waitForSelector('#checkbox',{timeout:60000}).catch(error => console.log('#checkbox: ', error.message));
                   await frame.click('#checkbox');
                   await page.waitForFunction(
-                    (selecter) => document.querySelector(selecter).innerText.includes("eroslp"),
-                    {timeout:20000},
+                    (selecter) => document.querySelector(selecter).innerText.includes("翻墙论坛"),
+                    {timeout:30000},
                     'body'
                   )
                   .then(async ()=>{
-                      console.log("登录成功");
+                      console.log("进入首页");
                       await myfuns.Sleep(1000);
                     })
-                  .catch(error => console.log('登录失败: ', error.message));
+                  .catch(error => console.log('验证失败 ', error.message));
                   break;
               }
           } 
         });
+    selecter = '#ls_username';
+    await page.waitForSelector(selecter,{timeout:30000})
+    .catch(async ()=>{
+        console.log ('等待输入用户名');
+        await myfuns.Sleep(3000);
+        await page.waitForSelector(selecter,{timeout:10000});
+    });
+    await page.evaluate(() => document.querySelector('#ls_username').value = 'eroslp').then(()=>console.log('用户名：eroslp'));
+    //await page.type('#ls_password', '');
+    await page.evaluate(() => document.querySelector('#ls_password').value = '780830lp').then(()=>console.log('密码：***'));
+    selecter = '#lsform > div > div > table > tbody > tr:nth-child(2) > td.fastlg_l > button > em';
+    await Promise.all([
+      page.waitForNavigation({timeout:20000}), 
+      page.click(selecter)   
+    ])
+    .then(()=>console.log ('登录成功'))
+    .catch(async (err) => {
+        console.log ("登录失败: "+ err);
+        await Promise.all([
+            page.waitForNavigation({timeout:30000}), 
+            page.evaluate(() => document.querySelector('#lsform > div > div > table > tbody > tr:nth-child(2) > td.fastlg_l > button > em').click())    
+          ])
+          .then(()=>console.log ('又登录成功'),
+                err=>{
+                    console.log ("又登录失败: "+ err);
+                    return Promise.reject(new Error('登录失败，返回'));
+                });
+        }); 
     await page.goto('https://fanqiangdang.com/forum.php?mod=post&action=newthread&fid=36');
-
     selecter = '#typeid_ctrl';
     await page.waitForSelector(selecter);
     await page.click(selecter);
@@ -130,7 +155,7 @@ async function  main () {
         defaultViewport: null,
         //ignoreHTTPSErrors: true,
         ignoreDefaultArgs: ["--enable-automation"],
-        userDataDir: './userdata'
+        //userDataDir: './userdata'
     });
     const page = await browser.newPage();
     page.on('dialog', async dialog => {
