@@ -106,3 +106,4 @@ dist
 #customize
 .vscode
 setup.json
+*.ck
