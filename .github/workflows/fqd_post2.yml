@@ -9,9 +9,8 @@ on:
     types: started
     
 env:
-  FREEOK_ACCOUNTS: ${{ secrets.FREEOK_ACCOUNTS }}
-  FREEOK_COOKIES: ${{ secrets.FREEOK_COOKIES }}
-  UPLOAD_BESULT_DIR: true
+  PWD_163: ${{ secrets.PWD_163 }}
+  PWD_fqd: ${{ secrets.PWD_fqd }}
 
 jobs:
     build:
