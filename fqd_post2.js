@@ -65,12 +65,13 @@ async function autoPost(page) {
                 });
             await myfuns.Sleep(1000);
             await page.goto('https://fanqiangdang.com/forum.php');
-            await myfuns.Sleep(15000);
+            await myfuns.Sleep(10000);
             const frames = await page.mainFrame().childFrames();
             let i = 0;
             for (let frame of frames) {
                 i++;
-                if (frame.url().includes('https://newassets.hcaptcha.com/captcha/v1/c4ed6d3/static/hcaptcha-checkbox.html')) {
+                console.log(frame.url());
+                if (frame.url().includes('hcaptcha-checkbox.html')) {
                     await frame.waitForSelector('#checkbox', { timeout: 60000 }).catch(error => console.log('#checkbox: ', error.message));
                     await frame.click('#checkbox');
                     await page.waitForFunction(
@@ -88,6 +89,15 @@ async function autoPost(page) {
             }
         });
     await page.goto('https://fanqiangdang.com/forum.php');
+    await page.waitForFunction(
+        (selecter) => document.querySelector(selecter).innerText.includes("翻墙论坛"),
+        { timeout: 30000 },
+        'body'
+    )                        
+    .catch(async () => {
+        console.log('未过验证');
+        return Promise.resolve('未过验证');
+    });
     await page.waitForFunction(
         (selecter) => document.querySelector(selecter).innerText.includes("eroslp"),
         { timeout: 3000 },
@@ -199,4 +209,4 @@ async function main() {
     //sqlite.close();
     if (runId ? true : false) await browser.close();
 }
-main();
+main().catch(error => console.log('执行失败：', error.message));;

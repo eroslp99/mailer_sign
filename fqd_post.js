@@ -65,7 +65,7 @@ async function autoPost(page) {
                 });
             await myfuns.Sleep(1000);
             await page.goto('https://fanqiangdang.com/forum.php');
-            await myfuns.Sleep(15000);
+            await myfuns.Sleep(10000);
             const frames = await page.mainFrame().childFrames();
             let i = 0;
             for (let frame of frames) {
@@ -96,7 +96,7 @@ async function autoPost(page) {
     )                        
     .catch(async () => {
         console.log('未过验证');
-        return Promise.reject(new Error('未过验证'));
+        return Promise.resolve('未过验证');
     });
     await page.waitForFunction(
         (selecter) => document.querySelector(selecter).innerText.includes("eroslp"),
