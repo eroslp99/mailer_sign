@@ -91,6 +91,7 @@ async function autoPost(page) {
                 }
             }
         });
+    await myfuns.Sleep(6000);    
     await page.waitForFunction(
         (selecter) => document.querySelector(selecter).innerText.includes("eroslp"),
         { timeout: 3000 },
@@ -112,6 +113,7 @@ async function autoPost(page) {
             await page.evaluate(() => document.querySelector('#ls_username').value = 'eroslp').then(() => console.log('用户名：eroslp'));
             await page.evaluate(pwd => document.querySelector('#ls_password').value = pwd,pwd).then(()=>console.log('密码'));
             await page.evaluate(() => document.querySelector("#ls_cookietime").click()).then(() => console.log('自动登录'));
+            await myfuns.Sleep(3000);  
             selecter = '#lsform > div > div > table > tbody > tr:nth-child(2) > td.fastlg_l > button > em';
             await Promise.all([
                 page.waitForNavigation({ timeout: 20000 }),
@@ -198,8 +200,7 @@ async function main() {
     console.log(`*****************开始fqd发帖 ${Date()}*******************\n`);
     await autoPost(page).then(() => {
         console.log('fqd发帖成功');
-    })
-    .catch(error => console.log('执行失败：', error.message));
+    }).catch(error => console.log('执行失败：', error.message));
     //sqlite.close();
     if (runId ? true : false) await browser.close();
 }
