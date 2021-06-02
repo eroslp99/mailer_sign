@@ -33,7 +33,7 @@ async function autoPost(page) {
             await page.waitForSelector(selecter, { timeout: 20000 })
                 .catch(async () => {
                     console.log('设置cookie按钮不存在');
-                    return Promise.resolve('设置cookie按钮不存在');
+                    return Promise.reject(new Error('设置cookie按钮不存在'));
                 });
             await myfuns.Sleep(3000);
             await page.click(selecter);
@@ -49,7 +49,7 @@ async function autoPost(page) {
                     await page.waitForSelector(selecter, { timeout: 20000 })
                         .catch(async () => {
                             console.log('设置cookie按钮不存在');
-                            return Promise.resolve('设置cookie按钮不存在');
+                            return  Promise.reject(new Error('设置cookie按钮不存在'));
                         });
                     await myfuns.Sleep(3000);
                     await page.click(selecter);
@@ -85,7 +85,7 @@ async function autoPost(page) {
                         })
                         .catch(async () => {
                             console.log('未过验证');
-                            return Promise.resolve('未过验证');
+                            return Promise.reject(new Error('未过验证'));
                         });
                     break;
                 }
@@ -127,7 +127,7 @@ async function autoPost(page) {
                         .then(() => console.log('又登录成功'),
                             err => {
                                 console.log("又登录失败: " + err);
-                                return Promise.resolve('登录失败，返回');
+                                return Promise.reject(new Error('登录失败，返回'));
                             });
                 });
         });
@@ -191,8 +191,8 @@ async function main() {
     console.log(`*****************开始fqd发帖 ${Date()}*******************\n`);
     await autoPost(page).then(() => {
         console.log('fqd发帖成功');
-    });
+    }).catch(error => console.log('执行失败：', error.message));
     //sqlite.close();
     if (runId ? true : false) await browser.close();
 }
-main().catch(error => console.log('执行失败：', error.message));;
+main();
