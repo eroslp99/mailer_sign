@@ -70,6 +70,7 @@ async function autoPost(page) {
             let i = 0;
             for (let frame of frames) {
                 i++;
+                console.log(frame.url());
                 if (frame.url().includes('https://newassets.hcaptcha.com/captcha/v1/c4ed6d3/static/hcaptcha-checkbox.html')) {
                     await frame.waitForSelector('#checkbox', { timeout: 60000 }).catch(error => console.log('#checkbox: ', error.message));
                     await frame.click('#checkbox');
@@ -88,6 +89,15 @@ async function autoPost(page) {
             }
         });
     await page.goto('https://fanqiangdang.com/forum.php');
+    await page.waitForFunction(
+        (selecter) => document.querySelector(selecter).innerText.includes("翻墙论坛"),
+        { timeout: 30000 },
+        'body'
+    )                        
+    .catch(async () => {
+        console.log('未过验证');
+        return Promise.reject(new Error('未过验证'));
+    });
     await page.waitForFunction(
         (selecter) => document.querySelector(selecter).innerText.includes("eroslp"),
         { timeout: 3000 },
@@ -192,4 +202,4 @@ async function main() {
     //sqlite.close();
     if (runId ? true : false) await browser.close();
 }
-main();
+main().catch(error => console.log('执行失败：', error.message));;
