@@ -6,12 +6,6 @@ const github = require('@actions/github');
 const myfuns = require('./myfuns.js');
 Date.prototype.Format = myfuns.Format;
 const runId = github.context.runId;
-let setup = {};
-if (!runId) {
-    setup  = JSON.parse(fs.readFileSync('./setup.json', 'utf8'));
-  }
-let pwd = runId?process.env.PWD_163:setup.pwd['163'];  
-console.log("pwd:",pwd);
 async function  main () {
     //console.log(await sqlite.open('./freeok.db'))
     const browser = await puppeteer.launch({ 
@@ -28,18 +22,18 @@ async function  main () {
         await dialog.dismiss();
     });
 
-    //let cookies = {};
-    //cookies = JSON.parse(fs.readFileSync('./aiboboxx@163.com.json', 'utf8'));
-    //await page.setCookie(...cookies);
-    await page.goto('https://mail.163.com/');
-    await page.waitForSelector('#loginDiv>iframe');//等待我的iframe出现
+    let cookies = {};
+    cookies = JSON.parse(fs.readFileSync('./aiboboxx@163.com.json', 'utf8'));
+    await page.setCookie(...cookies);
+    await page.goto('https://mail.163.com/',{ timeout: 60000 });
+ /*   await page.waitForSelector('#loginDiv>iframe',{ timeout: 60000 });//等待我的iframe出现
     const frame = ( await page.frames() )[3];//通过索引得到我的iframe
-    await frame.waitForSelector('.j-inputtext.dlemail');//等待用户名输入框出现
+    await frame.waitForSelector('.j-inputtext.dlemail',{ timeout: 60000 });//等待用户名输入框出现
     await frame.type('.j-inputtext.dlemail','aiboboxx');//输入账户
     await frame.waitForSelector('.dlpwd');//等待密码框出现
     await frame.type('.dlpwd',pwd);//输入密码
     await frame.click('#un-login');
-    await frame.click('#dologin');
+    await frame.click('#dologin'); */
     //await frame.waitForNavigation();
     await myfuns.Sleep(1000);
     await page.waitForSelector("#_mail_icon_21_182");
@@ -51,11 +45,10 @@ async function  main () {
         'body'
       ).then(()=>{console.log("收取完成!");});
     //await page.click("#_mail_icon_21_182");
-    //await myfuns.Sleep(5000);
-    //cookies = await page.cookies();
-    //allck['aiboboxx@163.com'] = cookies;
+    await myfuns.Sleep(5000);
+    cookies = await page.cookies();
     //sqlite.close();
-    //fs.writeFileSync('./aiboboxx@163.com.json', JSON.stringify(cookies, null, '\t'))
+    fs.writeFileSync('./aiboboxx@163.com.json', JSON.stringify(cookies, null, '\t'))
     if ( runId?true:false ) await browser.close();
 }
 main();
