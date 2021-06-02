@@ -43,12 +43,11 @@ async function  main () {
         (selecter) => document.querySelector(selecter).innerText.includes("收取完成"),
         {timeout:60000},
         'body'
-      ).then(()=>{console.log("收取完成!");});
-    //await page.click("#_mail_icon_21_182");
-    await myfuns.Sleep(5000);
-    cookies = await page.cookies();
-    //sqlite.close();
-    fs.writeFileSync('./aiboboxx@163.com.json', JSON.stringify(cookies, null, '\t'))
+      ).then(async ()=>{
+          console.log("收取完成!");
+          await myfuns.Sleep(5000);
+          cookies = await page.cookies();
+          fs.writeFileSync('./aiboboxx@163.com.json', JSON.stringify(cookies, null, '\t'))});
     if ( runId?true:false ) await browser.close();
 }
 main();

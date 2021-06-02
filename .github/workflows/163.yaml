@@ -3,8 +3,8 @@ name: 163login
 on:
   repository_dispatch:
   workflow_dispatch:
-  schedule:
-    - cron: '0 6 */2 * *'
+  # schedule:
+  #   - cron: '0 6 */2 * *'
   watch:
     types: started
     

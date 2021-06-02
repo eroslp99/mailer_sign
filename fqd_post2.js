@@ -28,7 +28,7 @@ async function autoPost(page) {
         .then(async () => { console.log("无需验证"); await myfuns.Sleep(1000); })
         .catch(async (error) => {
             console.log('需要验证 ');
-            await page.goto('https://accounts.hcaptcha.com/verify_email/56b6e35c-a87d-474e-8087-49e5c596be27');
+            await page.goto('https://accounts.hcaptcha.com/verify_email/6234aa23-5ee5-4f5e-b1d9-1187660ea55c');
             selecter = "#root > div > div.sc-fKgJPI.cxbltl > div > div.sc-ikXwFM.sc-uxdHp.hZHGfK.fiDOnB > button";
             await page.waitForSelector(selecter, { timeout: 20000 })
                 .catch(async () => {
