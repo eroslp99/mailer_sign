@@ -9,123 +9,146 @@ const puppeteer = require('puppeteer-extra')
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 puppeteer.use(StealthPlugin())
 Date.prototype.Format = myfuns.Format;
-async function  autoPost (page) {
+const runId = github.context.runId;
+let setup = {};
+if (!runId) {
+    setup  = JSON.parse(fs.readFileSync('./setup.json', 'utf8'));
+  }
+let pwd = runId?process.env.PWD_163:setup.pwd['fqd'];
+console.log("pwd:",pwd);
+async function autoPost(page) {
     let selecter = '';
-    await page.goto('https://fanqiangdang.com/forum.php');
+    await page.goto('https://fanqiangdang.com/forum.php')
+    .catch(error => console.log('首页超时'));
     await page.waitForFunction(
         (selecter) => document.querySelector(selecter).innerText.includes("翻墙论坛"),
-        {timeout:10000},
+        { timeout: 10000 },
         'body'
-      )
-      .then(async ()=>{console.log("无需验证");await myfuns.Sleep(1000);})
-      .catch(async (error)=>{
-          console.log('需要验证 ');
-          await page.goto('https://accounts.hcaptcha.com/verify_email/ebf36f8b-0722-4253-9d81-94193b9c91e7');
-          selecter = "#root > div > div.sc-fKgJPI.cxbltl > div > div.sc-ikXwFM.sc-uxdHp.hZHGfK.fiDOnB > button";
-          await page.waitForSelector(selecter,{timeout:20000})    
-          .catch(async ()=>{
-              console.log ('设置cookie按钮不存在');
-              return Promise.reject(new Error('设置cookie按钮不存在'));
-          });
-          await myfuns.Sleep(3000);
-          await page.click(selecter);
-          await page.waitForFunction(
-              (selecter) => document.querySelector(selecter).innerText.includes("Cookie集"),
-              {timeout:20000},
-              '#root > div > div.sc-fKgJPI.cxbltl > div > div.sc-ikXwFM.sc-uxdHp.hZHGfK.fiDOnB > span'
-            ).then(async ()=>{console.log("设置Cookie集成功");await myfuns.Sleep(1000);})
-            .catch(async (error)=>{
-                console.log ('重新获取cookie集');
-                await page.goto('https://accounts.hcaptcha.com/verify_email/ebf36f8b-0722-4253-9d81-94193b9c91e7');
-                selecter = "#root > div > div.sc-fKgJPI.cxbltl > div > div.sc-ikXwFM.sc-uxdHp.hZHGfK.fiDOnB > button";
-                await page.waitForSelector(selecter,{timeout:20000})    
-                .catch(async ()=>{
-                    console.log ('设置cookie按钮不存在');
+    )
+        .then(async () => { console.log("无需验证"); await myfuns.Sleep(1000); })
+        .catch(async (error) => {
+            console.log('需要验证 ');
+            await page.goto('https://accounts.hcaptcha.com/verify_email/6234aa23-5ee5-4f5e-b1d9-1187660ea55c');
+            selecter = "#root > div > div.sc-fKgJPI.cxbltl > div > div.sc-ikXwFM.sc-uxdHp.hZHGfK.fiDOnB > button";
+            await page.waitForSelector(selecter, { timeout: 20000 })
+                .catch(async () => {
+                    console.log('设置cookie按钮不存在');
                     return Promise.reject(new Error('设置cookie按钮不存在'));
                 });
-                await myfuns.Sleep(3000);
-                await page.click(selecter);
-                await page.waitForFunction(
-                    (selecter) => document.querySelector(selecter).innerText.includes("Cookie集"),
-                    {timeout:20000},
-                    '#root > div > div.sc-fKgJPI.cxbltl > div > div.sc-ikXwFM.sc-uxdHp.hZHGfK.fiDOnB > span'
-                  )                
-                  .catch(async ()=>{
-                    console.log ('获取cookie集失败');
-                    return Promise.reject(new Error('获取cookie集失败'));
+            await myfuns.Sleep(3000);
+            await page.click(selecter);
+            await page.waitForFunction(
+                (selecter) => document.querySelector(selecter).innerText.includes("Cookie集"),
+                { timeout: 20000 },
+                '#root > div > div.sc-fKgJPI.cxbltl > div > div.sc-ikXwFM.sc-uxdHp.hZHGfK.fiDOnB > span'
+            ).then(async () => { console.log("设置Cookie集成功"); await myfuns.Sleep(1000); })
+                .catch(async (error) => {
+                    console.log('重新获取cookie集');
+                    await page.goto('https://accounts.hcaptcha.com/verify_email/ebf36f8b-0722-4253-9d81-94193b9c91e7');
+                    selecter = "#root > div > div.sc-fKgJPI.cxbltl > div > div.sc-ikXwFM.sc-uxdHp.hZHGfK.fiDOnB > button";
+                    await page.waitForSelector(selecter, { timeout: 20000 })
+                        .catch(async () => {
+                            console.log('设置cookie按钮不存在');
+                            return Promise.reject(new Error('设置cookie按钮不存在'));
+                        });
+                    await myfuns.Sleep(3000);
+                    await page.click(selecter);
+                    await page.waitForFunction(
+                        (selecter) => document.querySelector(selecter).innerText.includes("Cookie集"),
+                        { timeout: 20000 },
+                        '#root > div > div.sc-fKgJPI.cxbltl > div > div.sc-ikXwFM.sc-uxdHp.hZHGfK.fiDOnB > span'
+                    )
+                        .catch(async () => {
+                            console.log('获取cookie集失败');
+                            return Promise.reject(new Error('获取cookie集失败'));
+                        });
                 });
-            });
-          await myfuns.Sleep(1000); 
-          await page.goto('https://fanqiangdang.com/forum.php');
-          await myfuns.Sleep(10000);
-          const frames = await page.mainFrame().childFrames();
-          let i = 0;
-          for (let frame of frames){
-              i++;
-              if (frame.url().includes('https://newassets.hcaptcha.com/captcha/v1/c4ed6d3/static/hcaptcha-checkbox.html')){
-                  await frame.waitForSelector('#checkbox',{timeout:60000}).catch(error => console.log('#checkbox: ', error.message));
-                  await frame.click('#checkbox');
-                  await page.waitForFunction(
-                    (selecter) => document.querySelector(selecter).innerText.includes("翻墙论坛"),
-                    {timeout:30000},
-                    'body'
-                  )
-                  .then(async ()=>{
-                      console.log("进入首页");
-                      await myfuns.Sleep(1000);
-                    })
-                  .catch(error => console.log('验证失败 ', error.message));
-                  break;
-              }
-          } 
+            await myfuns.Sleep(1000);
+            await page.goto('https://fanqiangdang.com/forum.php');
+            await myfuns.Sleep(15000);
+            const frames = await page.mainFrame().childFrames();
+            let i = 0;
+            for (let frame of frames) {
+                i++;
+                if (frame.url().includes('https://newassets.hcaptcha.com/captcha/v1/c4ed6d3/static/hcaptcha-checkbox.html')) {
+                    await frame.waitForSelector('#checkbox', { timeout: 60000 }).catch(error => console.log('#checkbox: ', error.message));
+                    await frame.click('#checkbox');
+                    await page.waitForFunction(
+                        (selecter) => document.querySelector(selecter).innerText.includes("翻墙论坛"),
+                        { timeout: 30000 },
+                        'body'
+                    )
+                        .then(async () => {
+                            console.log("进入首页");
+                            await myfuns.Sleep(1000);
+                        })
+                        .catch(error => console.log('验证失败 ', error.message));
+                    break;
+                }
+            }
         });
-    selecter = '#ls_username';
-    await page.waitForSelector(selecter,{timeout:30000})
-    .catch(async ()=>{
-        console.log ('等待输入用户名');
-        await myfuns.Sleep(3000);
-        await page.waitForSelector(selecter,{timeout:10000});
-    });
-    await page.evaluate(() => document.querySelector('#ls_username').value = 'eroslp').then(()=>console.log('用户名：eroslp'));
-    //await page.type('#ls_password', '');
-    await page.evaluate(() => document.querySelector('#ls_password').value = '780830lp').then(()=>console.log('密码：***'));
-    selecter = '#lsform > div > div > table > tbody > tr:nth-child(2) > td.fastlg_l > button > em';
-    await Promise.all([
-      page.waitForNavigation({timeout:20000}), 
-      page.click(selecter)   
-    ])
-    .then(()=>console.log ('登录成功'))
-    .catch(async (err) => {
-        console.log ("登录失败: "+ err);
-        await Promise.all([
-            page.waitForNavigation({timeout:30000}), 
-            page.evaluate(() => document.querySelector('#lsform > div > div > table > tbody > tr:nth-child(2) > td.fastlg_l > button > em').click())    
-          ])
-          .then(()=>console.log ('又登录成功'),
-                err=>{
-                    console.log ("又登录失败: "+ err);
-                    return Promise.reject(new Error('登录失败，返回'));
+    await page.goto('https://fanqiangdang.com/forum.php');
+    await page.waitForFunction(
+        (selecter) => document.querySelector(selecter).innerText.includes("eroslp"),
+        { timeout: 3000 },
+        '#um > p:nth-child(2) > strong > a'
+    )
+        .then(async () => {
+            console.log("已登录");
+            await myfuns.Sleep(1000);
+        })
+        .catch(async (error) => {
+            console.log('未登录 ');
+            selecter = '#ls_username';
+            await page.waitForSelector(selecter, { timeout: 30000 })
+                .catch(async () => {
+                    console.log('等待输入用户名');
+                    await myfuns.Sleep(3000);
+                    await page.waitForSelector(selecter, { timeout: 10000 });
                 });
-        }); 
+            await page.evaluate(() => document.querySelector('#ls_username').value = 'eroslp').then(() => console.log('用户名：eroslp'));
+            await page.evaluate(pwd => document.querySelector('#ls_password').value = pwd,pwd).then(()=>console.log('密码'));
+            await page.evaluate(() => document.querySelector("#ls_cookietime").click()).then(() => console.log('自动登录'));
+            selecter = '#lsform > div > div > table > tbody > tr:nth-child(2) > td.fastlg_l > button > em';
+            await Promise.all([
+                page.waitForNavigation({ timeout: 20000 }),
+                page.click(selecter)
+            ])
+                .then(() => console.log('登录成功'))
+                .catch(async (err) => {
+                    console.log("登录失败: " + err);
+                    await Promise.all([
+                        page.waitForNavigation({ timeout: 30000 }),
+                        page.evaluate(() => document.querySelector('#lsform > div > div > table > tbody > tr:nth-child(2) > td.fastlg_l > button > em').click())
+                    ])
+                        .then(() => console.log('又登录成功'),
+                            err => {
+                                console.log("又登录失败: " + err);
+                                return Promise.reject(new Error('登录失败，返回'));
+                            });
+                });
+        });
+    await myfuns.Sleep(500);
     await page.goto('https://fanqiangdang.com/forum.php?mod=post&action=newthread&fid=36');
+    await myfuns.Sleep(1000);
     selecter = '#typeid_ctrl';
     await page.waitForSelector(selecter);
     await page.click(selecter);
-    await myfuns.Sleep(500);
+    await myfuns.Sleep(1000);
     selecter = '#typeid_ctrl_menu > ul > li:nth-child(3)';
-    await page.waitForSelector(selecter);
+    //await page.waitForSelector(selecter);
     await page.click(selecter);
-    await myfuns.Sleep(500);
+    await myfuns.Sleep(1000);
     selecter = '#subject';
     await page.waitForSelector(selecter);
     await page.type(selecter,
-        ` 高速稳定 秒开4k Vmess/V2ray节点,长期可用  ${(new Date()).Format("yyyy-MM-dd hh:mm:ss") }更新`
-        );
+        ` 高速稳定 秒开4k Vmess/V2ray节点,长期可用  ${(new Date()).Format("yyyy-MM-dd hh:mm:ss")}更新`
+    );
     let content = `
     网速：10+Mbps网速，720-1080P支持；
     延迟：50ms+延迟，UDP加速器支持，KCP支持；
     节点：香港、新加坡、日本、韩国等100+数量全球节点，高速稳定 秒开4k 支持网飞
-    ${(new Date()).Format("yyyy-MM-dd") }更新
+    ${(new Date()).Format("yyyy-MM-dd")}更新
     节点公开后容易失效，
     请到 https://www.aiboboxx.ml/post/free-v2ray/ 
     获取私人专属v2ray订阅地址，长期可用。资源有限，先到先得。
@@ -133,19 +156,19 @@ async function  autoPost (page) {
     vmess://eyJ2IjoiMiIsImhvc3QiOiJzMjEzLnNub2Rlcy54eXoiLCJwYXRoIjoiXC9wYW5lbCIsInRscyI6IiIsInBzIiA6Iue/u+WimeWFmmZhbnFpYW5nZGFuZy5jb20iLCIiIDoi6aaZ5rivIOe9kemjniMyMTN8MS42fDF8OCV8ODA2R3xva21lLnh5enzlhaznm4roioLngrl8ODBub1RscyIsImFkZCI6InMyMTMuc25vZGVzLnh5eiIsInBvcnQiOjgwLCJpZCI6ImQ4YTM5M2UyLWUyN2UtMzQyMi05ZjY1LTNkY2RhYjUyZjZhYyIsImFpZCI6IjEiLCJuZXQiOiJ3cyIsInR5cGUiOiJub25lIn0=
     [/hide]
 `;
-    let frame = (await page.mainFrame().childFrames())[2];   
+    let frame = (await page.mainFrame().childFrames())[2];
     await frame.waitForSelector('body');
     await frame.type('body', content);
     selecter = '#postsubmit > span';
     await page.waitForSelector(selecter);
     await page.click(selecter);
-    await  page.waitForNavigation();
-}  
-async function  main () {
+    await page.waitForNavigation();
+}
+async function main() {
     let runId = github.context.runId;
-        //console.log(await sqlite.open('./freeok.db'))
-    const browser = await puppeteer.launch({ 
-        headless: runId?true:false ,
+    //console.log(await sqlite.open('./freeok.db'))
+    const browser = await puppeteer.launch({
+        headless: runId ? true : false,
         //slowMo: 150,
         args: [
             '--window-size=1920,1080',
@@ -155,18 +178,18 @@ async function  main () {
         defaultViewport: null,
         //ignoreHTTPSErrors: true,
         ignoreDefaultArgs: ["--enable-automation"],
-        //userDataDir: './userdata'
+        userDataDir: './userdata'
     });
     const page = await browser.newPage();
     page.on('dialog', async dialog => {
         //console.info(`➞ ${dialog.message()}`);
         await dialog.dismiss();
     });
-    console.log(`*****************开始fqd发帖 ${Date()}*******************\n`);  
-    await autoPost(page).then(()=>{
-          console.log ('fqd发帖成功');
+    console.log(`*****************开始fqd发帖 ${Date()}*******************\n`);
+    await autoPost(page).then(() => {
+        console.log('fqd发帖成功');
     });
     //sqlite.close();
-    if ( runId?true:false ) await browser.close();
+    if (runId ? true : false) await browser.close();
 }
 main();

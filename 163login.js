@@ -6,7 +6,11 @@ const github = require('@actions/github');
 const myfuns = require('./myfuns.js');
 Date.prototype.Format = myfuns.Format;
 const runId = github.context.runId;
-
+let setup = {};
+if (!runId) {
+    setup  = JSON.parse(fs.readFileSync('./setup.json', 'utf8'));
+  }
+  
 async function  main () {
     //console.log(await sqlite.open('./freeok.db'))
     const browser = await puppeteer.launch({ 
@@ -24,9 +28,7 @@ async function  main () {
     });
 
     //let cookies = {};
-    //let allck = JSON.parse(fs.readFileSync('./allck.json', 'utf8'));
     //cookies = JSON.parse(fs.readFileSync('./aiboboxx@163.com.json', 'utf8'));
-    //cookies = allck['aiboboxx@163.com'];
     //await page.setCookie(...cookies);
     await page.goto('https://mail.163.com/');
     await myfuns.Sleep(1000);

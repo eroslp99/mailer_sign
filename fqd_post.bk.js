@@ -78,7 +78,7 @@ async function  autoPost (page) {
     });
     await page.evaluate(() => document.querySelector('#ls_username').value = 'eroslp').then(()=>console.log('用户名：eroslp'));
     //await page.type('#ls_password', '');
-    await page.evaluate(() => document.querySelector('#ls_password').value = '780830lp').then(()=>console.log('密码：780830lp'));
+    await page.evaluate(() => document.querySelector('#ls_password').value = '').then(()=>console.log('密码'));
     selecter = '#lsform > div > div > table > tbody > tr:nth-child(2) > td.fastlg_l > button > em';
     await Promise.all([
       page.waitForNavigation({timeout:10000}), 
