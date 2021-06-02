@@ -31,6 +31,7 @@ async function  main () {
     //cookies = JSON.parse(fs.readFileSync('./aiboboxx@163.com.json', 'utf8'));
     //await page.setCookie(...cookies);
     await page.goto('https://mail.163.com/');
+    await page.evaluate(() => document.querySelector('#auto-id-1622611587495').value = 'eroslp').then(() => console.log('用户名：eroslp'));
     await myfuns.Sleep(1000);
     await page.waitForSelector("#_mail_icon_21_182");
     await myfuns.Sleep(1000);

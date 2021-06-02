@@ -71,7 +71,7 @@ async function autoPost(page) {
             for (let frame of frames) {
                 i++;
                 console.log(frame.url());
-                if (frame.url().includes('https://newassets.hcaptcha.com/captcha/v1/c4ed6d3/static/hcaptcha-checkbox.html')) {
+                if (frame.url().includes('hcaptcha-checkbox.html')) {
                     await frame.waitForSelector('#checkbox', { timeout: 60000 }).catch(error => console.log('#checkbox: ', error.message));
                     await frame.click('#checkbox');
                     await page.waitForFunction(

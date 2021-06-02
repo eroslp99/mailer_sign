@@ -32,6 +32,14 @@ jobs:
             - name: Run install
               run: npm install
             - name: Run Script
-              run: node fqd_post.js # > report.txt             
+              run: node fqd_post.js # > report.txt        
+            - name: Commit report
+              run: |
+                echo  "运行时间：`date '+%Y%m%d %H%M%S'`" > report.txt 
+                git config --global user.name 'eroslp99'
+                git config --global user.email 'eroslp99@gmail.com'
+                git add .
+                git commit -m "Automated report $(date '+%Y/%m/%d')"
+                git push     
            
               
