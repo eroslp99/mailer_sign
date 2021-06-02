@@ -28,12 +28,12 @@ async function autoPost(page) {
         .then(async () => { console.log("无需验证"); await myfuns.Sleep(1000); })
         .catch(async (error) => {
             console.log('需要验证 ');
-            await page.goto('https://accounts.hcaptcha.com/verify_email/6234aa23-5ee5-4f5e-b1d9-1187660ea55c');
+            await page.goto('https://accounts.hcaptcha.com/verify_email/56b6e35c-a87d-474e-8087-49e5c596be27');
             selecter = "#root > div > div.sc-fKgJPI.cxbltl > div > div.sc-ikXwFM.sc-uxdHp.hZHGfK.fiDOnB > button";
             await page.waitForSelector(selecter, { timeout: 20000 })
                 .catch(async () => {
                     console.log('设置cookie按钮不存在');
-                    return Promise.reject(new Error('设置cookie按钮不存在'));
+                    return Promise.resolve('设置cookie按钮不存在');
                 });
             await myfuns.Sleep(3000);
             await page.click(selecter);
@@ -44,12 +44,12 @@ async function autoPost(page) {
             ).then(async () => { console.log("设置Cookie集成功"); await myfuns.Sleep(1000); })
                 .catch(async (error) => {
                     console.log('重新获取cookie集');
-                    await page.goto('https://accounts.hcaptcha.com/verify_email/ebf36f8b-0722-4253-9d81-94193b9c91e7');
+                    await page.goto('https://accounts.hcaptcha.com/verify_email/56b6e35c-a87d-474e-8087-49e5c596be27');
                     selecter = "#root > div > div.sc-fKgJPI.cxbltl > div > div.sc-ikXwFM.sc-uxdHp.hZHGfK.fiDOnB > button";
                     await page.waitForSelector(selecter, { timeout: 20000 })
                         .catch(async () => {
                             console.log('设置cookie按钮不存在');
-                            return Promise.reject(new Error('设置cookie按钮不存在'));
+                            return Promise.resolve('设置cookie按钮不存在');
                         });
                     await myfuns.Sleep(3000);
                     await page.click(selecter);
@@ -60,7 +60,7 @@ async function autoPost(page) {
                     )
                         .catch(async () => {
                             console.log('获取cookie集失败');
-                            return Promise.reject(new Error('获取cookie集失败'));
+                            return Promise.resolve('获取cookie集失败');
                         });
                 });
             await myfuns.Sleep(1000);
@@ -83,21 +83,14 @@ async function autoPost(page) {
                             console.log("进入首页");
                             await myfuns.Sleep(1000);
                         })
-                        .catch(error => console.log('验证失败 ', error.message));
+                        .catch(async () => {
+                            console.log('未过验证');
+                            return Promise.resolve('未过验证');
+                        });
                     break;
                 }
             }
         });
-    await page.goto('https://fanqiangdang.com/forum.php');
-    await page.waitForFunction(
-        (selecter) => document.querySelector(selecter).innerText.includes("翻墙论坛"),
-        { timeout: 30000 },
-        'body'
-    )                        
-    .catch(async () => {
-        console.log('未过验证');
-        return Promise.resolve('未过验证');
-    });
     await page.waitForFunction(
         (selecter) => document.querySelector(selecter).innerText.includes("eroslp"),
         { timeout: 3000 },
@@ -134,7 +127,7 @@ async function autoPost(page) {
                         .then(() => console.log('又登录成功'),
                             err => {
                                 console.log("又登录失败: " + err);
-                                return Promise.reject(new Error('登录失败，返回'));
+                                return Promise.resolve('登录失败，返回');
                             });
                 });
         });
