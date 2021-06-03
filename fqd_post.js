@@ -22,11 +22,11 @@ async function autoPost(page) {
     .catch(error => console.log('首页超时'));
     await page.waitForFunction(
         (selecter) => document.querySelector(selecter).innerText.includes("翻墙论坛"),
-        { timeout: 10000 },
+        { timeout: 20000 },
         'body'
     )
-        .then(async () => { console.log("无需验证"); await myfuns.Sleep(1000); })
-        .catch(async (error) => {
+        .then(async () => { console.log("无需验证"); await myfuns.Sleep(1000); });
+/*         .catch(async (error) => {
             console.log('需要验证 ');
             await page.goto('https://accounts.hcaptcha.com/verify_email/6234aa23-5ee5-4f5e-b1d9-1187660ea55c');
             selecter = "#root > div > div.sc-fKgJPI.cxbltl > div > div.sc-ikXwFM.sc-uxdHp.hZHGfK.fiDOnB > button";
@@ -90,8 +90,8 @@ async function autoPost(page) {
                     break;
                 }
             }
-        });
-    await myfuns.Sleep(6000);    
+        }); */
+    //await myfuns.Sleep(6000);    
     await page.waitForFunction(
         (selecter) => document.querySelector(selecter).innerText.includes("eroslp"),
         { timeout: 3000 },
@@ -114,7 +114,7 @@ async function autoPost(page) {
             await page.evaluate(pwd => document.querySelector('#ls_password').value = pwd,pwd).then(()=>console.log('密码'));
             await page.evaluate(() => document.querySelector("#ls_cookietime").click()).then(() => console.log('自动登录'));
             await myfuns.Sleep(3000);  
-            selecter = '#lsform > div > div > table > tbody > tr:nth-child(2) > td.fastlg_l > button > em';
+            selecter = '#lsform > div > div > table > tbody > tr:nth-child(2) > td.fastlg_l > button';
             await Promise.all([
                 page.waitForNavigation({ timeout: 20000 }),
                 page.click(selecter)
@@ -124,7 +124,7 @@ async function autoPost(page) {
                     console.log("登录失败: " + err);
                     await Promise.all([
                         page.waitForNavigation({ timeout: 30000 }),
-                        page.evaluate(() => document.querySelector('#lsform > div > div > table > tbody > tr:nth-child(2) > td.fastlg_l > button > em').click())
+                        page.evaluate(() => document.querySelector('#lsform > div > div > table > tbody > tr:nth-child(2) > td.fastlg_l > button').click())
                     ])
                         .then(() => console.log('又登录成功'),
                             err => {
