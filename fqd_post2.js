@@ -21,11 +21,16 @@ async function autoPost(page) {
     await page.goto('https://fanqiangdang.com/forum.php')
     .catch(error => console.log('首页超时'));
     await page.waitForFunction(
-        (selecter) => document.querySelector(selecter).innerText.includes("翻墙论坛"),
-        { timeout: 20000 },
+        (selecter) => {
+            if (document.querySelector(selecter)){
+                return document.querySelector(selecter).innerText.includes("翻墙论坛");
+            }else{
+                return false;
+            }
+        },
+        { timeout: 60000 },
         'body'
-    )
-        .then(async () => { console.log("无需验证"); await myfuns.Sleep(1000); });
+    )      .then(async () => { console.log("无需验证"); await myfuns.Sleep(1000); });
 /*         .catch(async (error) => {
             console.log('需要验证 ');
             await page.goto('https://accounts.hcaptcha.com/verify_email/6234aa23-5ee5-4f5e-b1d9-1187660ea55c');
@@ -92,6 +97,7 @@ async function autoPost(page) {
             }
         }); */
     //await myfuns.Sleep(6000);    
+    //console.log("啵啵啵啵啵啵");
     await page.waitForFunction(
         (selecter) => document.querySelector(selecter).innerText.includes("eroslp"),
         { timeout: 3000 },
@@ -190,7 +196,7 @@ async function main() {
         defaultViewport: null,
         //ignoreHTTPSErrors: true,
         ignoreDefaultArgs: ["--enable-automation"],
-        userDataDir: './userdata'
+        //userDataDir: './userdata'
     });
     const page = await browser.newPage();
     page.on('dialog', async dialog => {

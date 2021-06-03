@@ -21,7 +21,13 @@ async function autoPost(page) {
     await page.goto('https://fanqiangdang.com/forum.php')
     .catch(error => console.log('首页超时'));
     await page.waitForFunction(
-        (selecter) => document.querySelector(selecter).innerText.includes("翻墙论坛"),
+        (selecter) => {
+            if (document.querySelector(selecter)){
+                return document.querySelector(selecter).innerText.includes("翻墙论坛");
+            }else{
+                return false;
+            }
+        },
         { timeout: 20000 },
         'body'
     )
@@ -183,7 +189,7 @@ async function main() {
         defaultViewport: null,
         //ignoreHTTPSErrors: true,
         ignoreDefaultArgs: ["--enable-automation"],
-        userDataDir: './userdata'
+        //userDataDir: './userdata'
     });
     const page = await browser.newPage();
     page.on('dialog', async dialog => {
