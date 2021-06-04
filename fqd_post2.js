@@ -15,7 +15,7 @@ if (!runId) {
     setup  = JSON.parse(fs.readFileSync('./setup.json', 'utf8'));
   }
 let pwd = runId?process.env.PWD_FQD:setup.pwd['fqd'];
-console.log("pwd:",pwd,process.env.PWD_FQD);
+//console.log("pwd:",pwd,process.env.PWD_FQD);
 async function autoPost(page) {
     let selecter = '';
     await page.goto('https://fanqiangdang.com/forum.php')
@@ -117,7 +117,7 @@ async function autoPost(page) {
                     await page.waitForSelector(selecter, { timeout: 10000 });
                 });
             await page.evaluate(() => document.querySelector('#ls_username').value = 'eroslp').then(() => console.log('用户名：eroslp'));
-            await page.evaluate(pwd => document.querySelector('#ls_password').value = pwd,pwd).then(()=>console.log('密码',pwd));
+            await page.evaluate(pwd => document.querySelector('#ls_password').value = pwd,pwd).then(()=>console.log('密码'));
             await page.evaluate(() => document.querySelector("#ls_cookietime").click()).then(() => console.log('自动登录'));
             await myfuns.Sleep(3000);  
             selecter = '.pn.vm';
