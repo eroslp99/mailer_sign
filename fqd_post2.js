@@ -120,7 +120,7 @@ async function autoPost(page) {
             await page.evaluate(pwd => document.querySelector('#ls_password').value = pwd,pwd).then(()=>console.log('密码'));
             await page.evaluate(() => document.querySelector("#ls_cookietime").click()).then(() => console.log('自动登录'));
             await myfuns.Sleep(3000);  
-            selecter = '#lsform > div > div > table > tbody > tr:nth-child(2) > td.fastlg_l > button';
+            selecter = '.pn.vm';
             await Promise.all([
                 page.waitForNavigation({ timeout: 20000 }),
                 page.click(selecter)
