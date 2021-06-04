@@ -14,8 +14,8 @@ let setup = {};
 if (!runId) {
     setup  = JSON.parse(fs.readFileSync('./setup.json', 'utf8'));
   }
-let pwd = runId?process.env.PWD_fqd:setup.pwd['fqd'];
-//console.log("pwd:",pwd);
+let pwd = runId?process.env.PWD_FQD:setup.pwd['fqd'];
+//console.log("pwd:",pwd,process.env.PWD_fqd);
 async function autoPost(page) {
     let selecter = '';
     await page.goto('https://fanqiangdang.com/forum.php')
