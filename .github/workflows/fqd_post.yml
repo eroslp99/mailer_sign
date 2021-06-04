@@ -10,7 +10,7 @@ on:
     
 env:
   PWD_163: ${{ secrets.PWD_163 }}
-  PWD_fqd: ${{ secrets.PWD_fqd }}
+  PWD_FQD: ${{ secrets.PWD_FQD }}
 jobs:
     build:
         runs-on: ubuntu-latest
