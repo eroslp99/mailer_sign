@@ -14,7 +14,7 @@ let setup = {};
 if (!runId) {
     setup  = JSON.parse(fs.readFileSync('./setup.json', 'utf8'));
   }
-let pwd = runId?process.env.PWD_163:setup.pwd['fqd'];
+let pwd = runId?process.env.PWD_fqd:setup.pwd['fqd'];
 //console.log("pwd:",pwd);
 async function autoPost(page) {
     let selecter = '';
