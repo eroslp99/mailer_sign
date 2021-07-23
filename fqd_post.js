@@ -18,7 +18,7 @@ let pwd = runId?process.env.PWD_FQD:setup.pwd['fqd'];
 //console.log("pwd:",pwd);
 async function autoPost(page) {
     let selecter = '';
-    await page.goto('https://fanqiangdang.com/forum.php')
+    await page.goto('https://fanqiangdang.com/forum.php',{timeout: 60000})
     .catch(error => console.log('首页超时'));
     await page.waitForFunction(
         (selecter) => {
@@ -28,7 +28,7 @@ async function autoPost(page) {
                 return false;
             }
         },
-        { timeout: 20000 },
+        { timeout: 30000 },
         'body'
     )
         .then(async () => { console.log("无需验证"); await myfuns.Sleep(1000); });
