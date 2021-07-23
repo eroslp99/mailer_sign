@@ -140,15 +140,15 @@ async function autoPost(page) {
                 });
         });
     await myfuns.Sleep(500);
-    await page.goto('https://fanqiangdang.com/forum.php?mod=post&action=newthread&fid=51');
-    await myfuns.Sleep(1000);
+    await page.goto('https://fanqiangdang.com/forum.php?mod=post&action=newthread&fid=51').catch((err)=>console.log('页面超时'));
+    await myfuns.Sleep(2000);
     selecter = '#typeid_ctrl';
     await page.waitForSelector(selecter);
     await page.click(selecter);
-    await myfuns.Sleep(1000);
+    await myfuns.Sleep(2000);
     selecter = '#typeid_ctrl_menu > ul > li:nth-child(3)';
     await page.click(selecter);
-    await myfuns.Sleep(1000);
+    await myfuns.Sleep(2000);
     selecter = '#subject';
     await page.waitForSelector(selecter);
     await page.type(selecter,
@@ -191,7 +191,8 @@ async function main() {
         args: [
             '--window-size=1920,1080',
             '--disable-web-security',
-            '--disable-features=IsolateOrigins,site-per-process'
+            '--disable-features=IsolateOrigins,site-per-process',
+            '--proxy-server=socks5://app.aiboboxx.ml:20170'
         ],
         defaultViewport: null,
         //ignoreHTTPSErrors: true,
