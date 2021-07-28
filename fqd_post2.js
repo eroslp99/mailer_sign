@@ -10,11 +10,14 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 puppeteer.use(StealthPlugin())
 Date.prototype.Format = myfuns.Format;
 const runId = github.context.runId;
+let browser;
 let setup = {};
 if (!runId) {
     setup  = JSON.parse(fs.readFileSync('./setup.json', 'utf8'));
+  }else{
+    setup  = JSON.parse(process.env.SETUP);
   }
-let pwd = runId?process.env.PWD_FQD:setup.pwd['fqd'];
+let pwd = setup.pwd['fqd'];
 //console.log("pwd:",pwd,process.env.PWD_FQD);
 async function autoPost(page) {
     let selecter = '';
@@ -183,10 +186,39 @@ async function autoPost(page) {
     await page.click(selecter);
     await page.waitForNavigation();
 }
+async function v2raya() {
+    browser = await puppeteer.launch({ 
+      headless: runId?true:false ,
+      args: [
+        '--window-size=1920,1080'    ],
+      defaultViewport: null,
+      ignoreHTTPSErrors: true
+    });
+      //console.log(await sqlite.open('./freeok.db'))
+      const page = await browser.newPage();
+      // 当页面中的脚本使用“alert”、“prompt”、“confirm”或“beforeunload”时发出
+        page.on('dialog', async dialog => {
+          //console.info(`➞ ${dialog.message()}`);
+          await dialog.dismiss();
+      });
+      await page.goto('http://app.aiboboxx.ml:2017/');  
+      selecter = '#login > div.animation-content > div > section > div:nth-child(2) > div > input';
+      await page.waitForSelector(selecter,{timeout:15000});
+      await page.type(selecter, "eroslp");
+      await page.type("#login > div.animation-content > div > section > div:nth-child(3) > div > input", setup.pwd_v2raya);
+      await page.click("#login > div.animation-content > div > footer > button > span");
+      await myfuns.Sleep(2000);
+      await page.waitForSelector("#app > nav > div.navbar-menu > div.navbar-end > a:nth-child(1)",{timeout:15000});
+      await page.click("#app > nav > div.navbar-menu > div.navbar-end > a:nth-child(1)");
+      await myfuns.Sleep(2000);
+      await page.click("body > div.modal.is-active > div.animation-content > div > footer > button.button.is-primary");
+      await myfuns.Sleep(2000);
+      await page.close();
+      await browser.close();
+  }
 async function main() {
-    let runId = github.context.runId;
-    //console.log(await sqlite.open('./freeok.db'))
-    const browser = await puppeteer.launch({
+    await v2raya();
+    browser = await puppeteer.launch({
         headless: runId ? true : false,
         //slowMo: 150,
         args: [
