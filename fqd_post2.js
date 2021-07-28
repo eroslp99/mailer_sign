@@ -147,7 +147,8 @@ async function autoPost(page) {
     await page.click(selecter);
     await myfuns.Sleep(2000);
     selecter = '#typeid_ctrl_menu > ul > li:nth-child(3)';
-    await page.click(selecter);
+    await page.waitForSelector(selecter);
+    await page.evaluate(() => document.querySelector('#typeid_ctrl_menu > ul > li:nth-child(3)').click());
     await myfuns.Sleep(2000);
     selecter = '#subject';
     await page.waitForSelector(selecter);
