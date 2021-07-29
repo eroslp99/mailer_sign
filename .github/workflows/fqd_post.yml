@@ -9,8 +9,8 @@ on:
     types: started
     
 env:
-  PWD_163: ${{ secrets.PWD_163 }}
-  PWD_FQD: ${{ secrets.PWD_FQD }}
+  SETUP: ${{ secrets.SETUP }}
+
 jobs:
     build:
         runs-on: ubuntu-latest
