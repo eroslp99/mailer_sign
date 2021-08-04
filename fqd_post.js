@@ -204,7 +204,13 @@ async function v2raya() {
       await page.waitForSelector("#app > nav > div.navbar-menu > div.navbar-end > a:nth-child(1)",{timeout:15000});
       await page.click("#app > nav > div.navbar-menu > div.navbar-end > a:nth-child(1)");
       await myfuns.Sleep(2000);
-      await page.waitForSelector("body > div.modal.is-active > div.animation-content > div > footer > button.button.is-primary",{timeout:15000});
+      await page.waitForSelector("body > div.modal.is-active > div.animation-content > div > footer > button.button.is-primary",{timeout:15000})
+      .catch(async (error) => {
+        console.log('clickerror: ', error.message);
+        await page.click("#app > nav > div.navbar-menu > div.navbar-end > a:nth-child(1)")
+        .then(()=>{console.log('clickagain')});
+        await page.waitForSelector("body > div.modal.is-active > div.animation-content > div > footer > button.button.is-primary",{timeout:15000});
+      });
       await page.click("body > div.modal.is-active > div.animation-content > div > footer > button.button.is-primary")
       .catch(error => console.log('clickerror: ', error.message));
       await myfuns.Sleep(2000);
@@ -213,6 +219,7 @@ async function v2raya() {
   }
 async function main() {
     await v2raya();
+    await myfuns.Sleep(2000);
     browser = await puppeteer.launch({
         headless: runId ? true : false,
         //slowMo: 150,
