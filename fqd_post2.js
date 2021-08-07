@@ -23,6 +23,7 @@ async function autoPost(page) {
     let selecter = '';
     await page.goto('https://fanqiangdang.com/forum.php',{timeout: 60000})
     .catch(error => console.log('首页超时'));
+    console.log("翻墙论坛");
     await page.waitForFunction(
         (selecter) => {
             if (document.querySelector(selecter)){
@@ -100,7 +101,7 @@ async function autoPost(page) {
             }
         }); */
     //await myfuns.Sleep(6000);    
-    console.log("翻墙论坛");
+    console.log("登录");
     await page.waitForFunction(
         (selecter) => document.querySelector(selecter).innerText.includes("eroslp"),
         { timeout: 3000 },
@@ -142,7 +143,7 @@ async function autoPost(page) {
                             });
                 });
         });
-        console.log("登录");    
+        console.log("发帖");    
     await myfuns.Sleep(500);
     await page.goto('https://fanqiangdang.com/forum.php?mod=post&action=newthread&fid=51').catch((err)=>console.log('页面超时'));
     await myfuns.Sleep(2000);
