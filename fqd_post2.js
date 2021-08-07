@@ -100,7 +100,7 @@ async function autoPost(page) {
             }
         }); */
     //await myfuns.Sleep(6000);    
-    //console.log("啵啵啵啵啵啵");
+    console.log("翻墙论坛");
     await page.waitForFunction(
         (selecter) => document.querySelector(selecter).innerText.includes("eroslp"),
         { timeout: 3000 },
@@ -142,6 +142,7 @@ async function autoPost(page) {
                             });
                 });
         });
+        console.log("登录");    
     await myfuns.Sleep(500);
     await page.goto('https://fanqiangdang.com/forum.php?mod=post&action=newthread&fid=51').catch((err)=>console.log('页面超时'));
     await myfuns.Sleep(2000);
@@ -218,6 +219,7 @@ async function v2raya() {
         .then(()=>{console.log('clickagain')});
         await page.waitForSelector("body > div.modal.is-active > div.animation-content > div > footer > button.button.is-primary",{timeout:15000});
       });
+      console.log('click保存')
       await page.click("body > div.modal.is-active > div.animation-content > div > footer > button.button.is-primary")
       .catch(error => console.log('clickerror: ', error.message));
       await myfuns.Sleep(2000);
