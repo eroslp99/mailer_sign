@@ -32,7 +32,7 @@ async function autoPost(page) {
                 return false;
             }
         },
-        { timeout: 600000 },
+        { timeout: 60000 },
         'body'
     )      .then(async () => { console.log("无需验证"); await myfuns.Sleep(1000); });
 /*         .catch(async (error) => {
