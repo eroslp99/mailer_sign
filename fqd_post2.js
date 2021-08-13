@@ -27,6 +27,7 @@ async function autoPost(page) {
     await page.waitForFunction(
         (selecter) => {
             if (document.querySelector(selecter)){
+                console.log("body",document.querySelector('body').innerText);
                 return document.querySelector(selecter).innerText.includes("翻墙论坛");
             }else{
                 return false;
