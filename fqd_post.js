@@ -213,7 +213,9 @@ async function v2raya() {
         console.log('clickerror: ', error.message);
         await page.click("#app > nav > div.navbar-menu > div.navbar-end > a:nth-child(1)")
         .then(()=>{console.log('clickagain')});
-        await page.waitForSelector("body > div.modal.is-active > div.animation-content > div > footer > button.button.is-primary",{timeout:15000});
+      await myfuns.Sleep(2000);
+      await page.waitForSelector("body > div.modal.is-active > div.animation-content > div > footer > button.button.is-primary",{timeout:15000})
+      .catch(async (error)=>{console.log('error: ', error.message);});
       });
       console.log('click保存')
       await page.click("body > div.modal.is-active > div.animation-content > div > footer > button.button.is-primary")
@@ -221,23 +223,21 @@ async function v2raya() {
       await myfuns.Sleep(2000);
       await page.close();
       await browser.close();
+    await myfuns.Sleep(2000);
   }
 async function main() {
     await v2raya();
-    await myfuns.Sleep(2000);
+    //await myfuns.Sleep(2000);
     browser = await puppeteer.launch({
         headless: runId ? true : false,
         //slowMo: 150,
         args: [
             '--window-size=1920,1080',
-            '--disable-web-security',
-            '--disable-features=IsolateOrigins,site-per-process',
             '--proxy-server=socks5://app.aiboboxx.ml:20170'    
         ],
         defaultViewport: null,
-        //ignoreHTTPSErrors: true,
-        ignoreDefaultArgs: ["--enable-automation"],
-        //userDataDir: './userdata'
+        ignoreHTTPSErrors: true,
+
     });
     const page = await browser.newPage();
     page.on('dialog', async dialog => {
