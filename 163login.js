@@ -26,14 +26,14 @@ async function  main () {
     cookies = JSON.parse(fs.readFileSync('./aiboboxx@163.com.json', 'utf8'));
     await page.setCookie(...cookies);
     await page.goto('https://mail.163.com/',{ timeout: 60000 });
- /*   await page.waitForSelector('#loginDiv>iframe',{ timeout: 60000 });//等待我的iframe出现
+  await page.waitForSelector('#loginDiv>iframe',{ timeout: 60000 });//等待我的iframe出现
     const frame = ( await page.frames() )[3];//通过索引得到我的iframe
     await frame.waitForSelector('.j-inputtext.dlemail',{ timeout: 60000 });//等待用户名输入框出现
     await frame.type('.j-inputtext.dlemail','aiboboxx');//输入账户
     await frame.waitForSelector('.dlpwd');//等待密码框出现
     await frame.type('.dlpwd',pwd);//输入密码
     await frame.click('#un-login');
-    await frame.click('#dologin'); */
+    await frame.click('#dologin'); 
     //await frame.waitForNavigation();
     await myfuns.Sleep(1000);
     await page.waitForSelector("#_mail_icon_21_182");

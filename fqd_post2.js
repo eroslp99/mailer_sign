@@ -232,7 +232,7 @@ async function v2raya() {
     await myfuns.Sleep(2000);
   }
 async function main() {
-    await v2raya();
+    //await v2raya();
     browser = await puppeteer.launch({
         headless: runId ? true : false,
         //slowMo: 150,
