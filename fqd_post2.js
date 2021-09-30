@@ -2,6 +2,7 @@ const fs = require("fs")
 const core = require('@actions/core');
 const github = require('@actions/github');
 const myfuns = require('./myfuns.js');
+const url = require('url');
 // puppeteer-extra is a drop-in replacement for puppeteer,
 // it augments the installed puppeteer with plugin functionality
 const puppeteer = require('puppeteer-extra')
@@ -248,6 +249,20 @@ async function main() {
         //console.info(`➞ ${dialog.message()}`);
         await dialog.dismiss();
     });
+    await page.setRequestInterception(true);
+    //监听每一次请求，形参为请求对象
+    page.on('request',(interceptedRequest)=>{
+        //ite.url()获取请求url地址
+        //let url = interceptedRequest.url();
+        let urlObj=url.parse(interceptedRequest.url());
+        //如果是谷歌的广告
+        if(urlObj.hostname=='googleads.g.doubleclick.net' || urlObj.hostname.indexOf('google')!=-1){
+            //拦截请求
+            interceptedRequest.abort();
+        }else{
+            interceptedRequest.continue();
+        }
+    })
     console.log(`*****************开始fqd发帖 ${Date()}*******************\n`);
     await autoPost(page).then(() => {
         console.log('fqd发帖成功');
