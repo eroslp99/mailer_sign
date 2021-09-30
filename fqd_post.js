@@ -36,7 +36,11 @@ async function autoPost(page) {
         { timeout: 60000 },
         'body'
     )
-        .then(async () => { console.log("无需验证"); await myfuns.Sleep(1000); });
+        .then(async () => { console.log("无需验证"); await myfuns.Sleep(1000); })
+        .catch(async () => { 
+            await page.evaluate(() =>console.log(document.querySelector('body').innerText)); 
+            await myfuns.Sleep(1000); 
+        });
 /*         .catch(async (error) => {
             console.log('需要验证 ');
             await page.goto('https://accounts.hcaptcha.com/verify_email/6234aa23-5ee5-4f5e-b1d9-1187660ea55c');
@@ -152,6 +156,7 @@ async function autoPost(page) {
     selecter = '#typeid_ctrl';
     await page.waitForSelector(selecter);
     await page.click(selecter);
+    
     await myfuns.Sleep(2000);
     selecter = '#typeid_ctrl_menu > ul > li:nth-child(2)';
     await page.waitForSelector(selecter);
