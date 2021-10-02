@@ -19,7 +19,7 @@ async function  main () {
     //console.log(await sqlite.open('./freeok.db'))
     const browser = await puppeteer.launch({ 
         headless: runId?true:false ,
-        args: ['--window-size=1920,1080'],
+        args: ['--window-size=1920,1080',setup.proxy],
         defaultViewport: null,
         ignoreHTTPSErrors: true
     });
