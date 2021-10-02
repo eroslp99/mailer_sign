@@ -2,7 +2,7 @@ const fs = require("fs");
 const puppeteer = require('puppeteer');
 const core = require('@actions/core');
 const github = require('@actions/github');
-const { tFormat, sleep, clearBrowser, getRndInteger, randomOne, randomString,findFrames  } = require('./common.js');
+const { tFormat, sleep, clearBrowser, getRndInteger, randomOne, randomString,findFrames,findFrame  } = require('./common.js');
 //const { sbFreeok,login,loginWithCookies,resetPwd } = require('./utils.js');
 const runId = github.context.runId;
 let browser;
@@ -20,7 +20,6 @@ async function  main () {
         args: ['--window-size=1920,1080'],
         defaultViewport: null,
         ignoreHTTPSErrors: true,
-        //userDataDir: './userdata'
     });
     const page = await browser.newPage();
     // 当页面中的脚本使用“alert”、“prompt”、“confirm”或“beforeunload”时发出
@@ -29,20 +28,20 @@ async function  main () {
         await dialog.dismiss();
     });
 
-    let cookies = {};
+    //let cookies = {};
     //cookies = JSON.parse(fs.readFileSync('./aiboboxx@163.com.json', 'utf8'));
     //await page.setCookie(...cookies);
     await page.goto('https://mail.163.com/',{ timeout: 60000 });
     await page.waitForSelector('#loginDiv>iframe',{ timeout: 60000 });//等待我的iframe出现
     //await findFrames(page);
-    const frame = ( await page.frames() )[3];//通过索引得到我的iframe
+    //const frame = ( await page.frames() )[3];//通过索引得到我的iframe
+    const frame = await findFrame(page,'https://dl.reg.163.com/webzj/v1.0.1/pub/index_dl2_new.html')
     await frame.waitForSelector('.j-inputtext.dlemail',{ timeout: 60000 });//等待用户名输入框出现
     await frame.type('.j-inputtext.dlemail','aiboboxx');//输入账户
     await frame.waitForSelector('.dlpwd');//等待密码框出现
     await frame.type('.dlpwd',pwd);//输入密码
     await frame.click('#un-login');
     await frame.click('#dologin'); 
-    //await frame.waitForNavigation();
     await sleep(1000);
     await page.waitForSelector("#_mail_icon_21_182");
     await sleep(1000);

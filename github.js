@@ -2,7 +2,7 @@ const fs = require("fs");
 const puppeteer = require('puppeteer');
 const core = require('@actions/core');
 const github = require('@actions/github');
-const { tFormat, sleep, clearBrowser, getRndInteger, randomOne, randomString,findFrames  } = require('./common.js');
+const { tFormat, sleep, clearBrowser, getRndInteger, randomOne, randomString,findFrames,waitForString  } = require('./common.js');
 //const { sbFreeok,login,loginWithCookies,resetPwd } = require('./utils.js');
 const runId = github.context.runId;
 let browser;
@@ -37,19 +37,7 @@ async function  main () {
     await page.click('#login > div.auth-form-body.mt-3 > form > div > input.btn.btn-primary.btn-block.js-sign-in-button');
     //await page.waitForNavigation();
     await sleep(1000);
-    await page.waitForFunction(
-        (selecter,string) => {
-            if (document.querySelector(selecter)){
-                //console.log("body",document.querySelector('body').innerText);
-                return document.querySelector(selecter).innerText.includes(string);
-            }else{
-                return false;
-            }
-        },
-        { timeout: 60000 },
-        'body',
-        'Repositories'
-    ) 
+    await waitForString(page,'body','Repositories');
     //let cookies = {};
     //cookies = JSON.parse(fs.readFileSync('./eroslp99@github.com.json', 'utf8'));
     //await page.setCookie(...cookies);

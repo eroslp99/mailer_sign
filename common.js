@@ -44,7 +44,17 @@ async function findFrames (page) {
 	
 }
 exports.findFrames = findFrames ;
+exports.findFrame = async function (page,url) {
+    const frames = await page.mainFrame().childFrames();   
+    let i = 0;
+    for (let frame of frames){
+        i++;
+		//console.log(i,frame.url(),frame.setContent(i));
+        if (frame.url().includes(url)) return frame;
 
+	}
+
+}
 exports.getRndInteger = function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
@@ -63,131 +73,19 @@ exports.randomString =  function randomString(length, chars) {
     for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
     return result;
   }
-exports.sbFreeok =  async function sbFreeok(page) {
-    const injectedScript = `
-      const getCanvasValue = (selector) => {
-          let canvas = document.querySelector(selector)
-          let ctx = canvas.getContext('2d')
-          let [width, height] = [canvas.width, canvas.height]
-          let rets = [...Array(height)].map(_ => [...Array(width)].map(_ => 0))
-          for (let i = 0; i < height; ++i) { 
-              for (let j = 0; j < width; ++j) { 
-                  rets[i][j] = Object.values(ctx.getImageData(j,i,1,1).data)
-              }
-          }        
-          return rets
-      }
-  `
-    await page.addScriptTag({ content: injectedScript });
-    async function _getDistance() {
-      const THRESHOLD = 1
-      const _equals = (a, b) => {
-        if (a.length !== b.length) {
-          return false
+exports.waitForString =  async function waitForString(page,selecter,string) {
+  await page.waitForFunction(
+    (selecter,string) => {
+        if (document.querySelector(selecter)){
+            //console.log("body",document.querySelector('body').innerText);
+            return document.querySelector(selecter).innerText.includes(string);
+        }else{
+            return false;
         }
-        for (let i = 0; i < a.length; ++i) {
-          let delta = Math.abs(a[i] - b[i])
-          if (delta > THRESHOLD) {
-            return false
-          }
-        }
-        return true
-      }
-      const _differentSet = (a1, a2) => {
-        //console.log("a1", a1)
-        //console.log("a2", a2)
-        let rets = []
-        a1.forEach((el, y) => {
-          el.forEach((el2, x) => {
-            if (!_equals(el2, a2[y][x])) {
-              rets.push({
-                x,
-                y,
-                v: el2,
-                v2: a2[y][x]
-              })
-            }
-          })
-        })
-        return rets
-      }
-      const _getLeftest = (array) => {
-        return array.sort((a, b) => {
-          if (a.x < b.x) {
-            return -1
-          }
-  
-          else if (a.x == b.x) {
-            if (a.y <= b.y) {
-              return -1
-            }
-            return 1
-          }
-          return 1
-        }).shift()
-      }
-      let selecter = 'body > div.geetest_fullpage_click.geetest_float.geetest_wind.geetest_slide3 > div.geetest_fullpage_click_wrap > div.geetest_fullpage_click_box > div > div.geetest_wrap > div.geetest_widget > div > a > div.geetest_canvas_img.geetest_absolute > div > canvas.geetest_canvas_bg.geetest_absolute';
-      await page.waitForSelector(selecter);
-      let rets1 = await page.evaluate((selecter) => getCanvasValue(selecter), selecter);
-      //console.log("rets1",rets1);
-      selecter = 'body > div.geetest_fullpage_click.geetest_float.geetest_wind.geetest_slide3 > div.geetest_fullpage_click_wrap > div.geetest_fullpage_click_box > div > div.geetest_wrap > div.geetest_widget > div > a > div.geetest_canvas_img.geetest_absolute > canvas';
-      await page.waitForSelector(selecter);
-      let rets2 = await page.evaluate((selecter) => getCanvasValue(selecter), selecter);
-      //await page.evaluate(()=>dlbg(),);
-      //console.log("rets2",rets2);
-      let dest = _getLeftest(_differentSet(rets1, rets2));
-      //console.log('dest',dest);
-      return dest.x;
-    }
-    const distance = await _getDistance();
-    const button = await page.waitForSelector("body > div.geetest_fullpage_click.geetest_float.geetest_wind.geetest_slide3 > div.geetest_fullpage_click_wrap > div.geetest_fullpage_click_box > div > div.geetest_wrap > div.geetest_slider.geetest_ready > div.geetest_slider_button");
-    const box = await button.boundingBox();
-    const axleX = Math.floor(box.x + box.width / 2);
-    const axleY = Math.floor(box.y + box.height / 2);
-    await btnSlider(distance);
-    async function btnSlider(distance) {
-      await page.mouse.move(axleX, axleY);
-      await page.mouse.down();
-      await sleep (getRndInteger(100, 200));
-      await page.mouse.move(box.x + distance / 4 + getRndInteger(-8, 10), axleY + getRndInteger(-8, 10), { steps: +getRndInteger(60, 100) });
-      //await sleep (getRndInteger(50, 200));
-      await page.mouse.move(box.x + distance / 2 + getRndInteger(-8, 10), axleY + getRndInteger(-8, 10), { steps: getRndInteger(60, 100) });
-      //await sleep (getRndInteger(50, 200));
-      await page.mouse.move(box.x + (distance / 8) * 7 + getRndInteger(-8, 10), axleY + getRndInteger(-8, 10), { steps: getRndInteger(60, 80) });
-      //await sleep (getRndInteger(50, 200));
-      await page.mouse.move(box.x + distance  + getRndInteger(-8, 10), axleY + getRndInteger(-8, 10), { steps: getRndInteger(60, 100) });
-      //await sleep (getRndInteger(50, 200));
-      await page.mouse.move(box.x + distance + getRndInteger(10, 50), axleY + getRndInteger(-8, 10), { steps: getRndInteger(60, 100) });
-      //await sleep (getRndInteger(50, 200));
-      await page.mouse.move(box.x + distance + 30 + getRndInteger(-1, 3), axleY + getRndInteger(-8, 10), { steps: getRndInteger(60, 100) });
-      await sleep (getRndInteger(50, 200));
-      await page.mouse.up();
-      await sleep (2000);
-  
-      let text = await page.evaluate(() => {
-        return document.querySelector("#embed-captcha > div > div.geetest_btn > div.geetest_radar_btn > div.geetest_radar_tip").innerText;
-      });
-      let text2 = await page.evaluate(() => {
-        return document.querySelector("#embed-captcha > div").innerText;
-      });
-      console.log(text, text2);
-      let step = 0;
-      if (text) {
-        // 如果失败重新获取滑块
-        if (
-          text.includes("怪物吃了拼图") ||
-          text.includes("拖动滑块将悬浮图像正确拼合") ||
-          text.includes("网络不给力请点击重试")
-        ) {
-          await page.waitFor(1000);
-          await page.click("#embed-captcha > div > div.geetest_btn > div.geetest_radar_btn > div.geetest_radar_tip");
-          await sleep(2000);
-          step = await _getDistance();
-          await btnSlider(step);
-        } else if (text.includes("请完成验证")) {
-          step = await _getDistance();
-          await btnSlider(step);
-        }
-      }
-    }
+    },
+    { timeout: 60000 },
+    selecter,
+    string
+) 
+
   }
