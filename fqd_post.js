@@ -1,7 +1,6 @@
 const fs = require("fs");
 const core = require('@actions/core');
 const github = require('@actions/github');
-const myfuns = require('./myfuns.js');
 const url = require('url');
 const puppeteer = require('puppeteer-extra');
 // add stealth plugin and use defaults (all evasion techniques)

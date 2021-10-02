@@ -50,7 +50,7 @@ async function  main () {
       _post(url);
     } 
     async function _post(url){
-      await page.goto(url).then(async () => { console.log("目标页面");});;
+      await page.goto(url).then(async () => { console.log("目标页面");});
       let body =  await page.$eval('body', el => el.innerText);
       if (body.includes("免费白嫖公益v2ray机场订阅地址自助获取")){
           console.log("已存在！");
