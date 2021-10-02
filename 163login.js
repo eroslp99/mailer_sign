@@ -35,7 +35,7 @@ async function  main () {
     await page.waitForSelector('#loginDiv>iframe',{ timeout: 60000 });//等待我的iframe出现
     //await findFrames(page);
     //const frame = ( await page.frames() )[3];//通过索引得到我的iframe
-    const frame = await findFrame(page,'https://dl.reg.163.com/webzj/v1.0.1/pub/index_dl2_new.html')
+    const frame = await findFrame(page,'https://dl.reg.163.com/');
     await frame.waitForSelector('.j-inputtext.dlemail',{ timeout: 60000 });//等待用户名输入框出现
     await frame.type('.j-inputtext.dlemail','aiboboxx');//输入账户
     await frame.waitForSelector('.dlpwd');//等待密码框出现

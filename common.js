@@ -51,7 +51,6 @@ exports.findFrame = async function (page,url) {
         i++;
 		//console.log(i,frame.url(),frame.setContent(i));
         if (frame.url().includes(url)) return frame;
-
 	}
 
 }

@@ -37,7 +37,7 @@ async function  main () {
     await page.click('#login > div.auth-form-body.mt-3 > form > div > input.btn.btn-primary.btn-block.js-sign-in-button');
     //await page.waitForNavigation();
     await sleep(1000);
-    await waitForString(page,'body','Repositories');
+    await waitForString(page,'body','Repositories').catch(async ()=>{console.log(await page.$eval('body', el => el.innerText));});
     //let cookies = {};
     //cookies = JSON.parse(fs.readFileSync('./eroslp99@github.com.json', 'utf8'));
     //await page.setCookie(...cookies);
