@@ -45,9 +45,11 @@ async function  main () {
     //cookies = JSON.parse(fs.readFileSync('./eroslp99@github.com.json', 'utf8'));
     //await page.setCookie(...cookies);
     let urls =[];
-    urls.push('https://github.com/freefq/free/issues/');
+    urls.push('https://github.com/freefq/free/issues');
+    urls.push('https://github.com/zhoushuai0207/ladder/issues');
     for (let url of urls){
-      _post(url);
+      console.log(url);
+      await _post(url);
     } 
     async function _post(url){
       await page.goto(url).then(async () => { console.log("目标页面");});
@@ -55,13 +57,13 @@ async function  main () {
       if (body.includes("免费白嫖公益v2ray机场订阅地址自助获取")){
           console.log("已存在！");
       }else{
-          await page.goto(url+'new');
+          await page.goto(url+'/new');
           await sleep(1000);
           await page.waitForSelector("#issue_title");
           await sleep(1000);
           await page.type("#issue_title",'免费白嫖公益v2ray机场订阅地址自助获取');
           let content = `
-          免费白嫖公益v2ray机场订阅地址自助获取
+          [免费白嫖公益v2ray机场订阅地址自助获取](https://www.aiboboxx.ml/post/free-v2ray/)
           https://www.aiboboxx.ml/post/free-v2ray/
             `;
           await page.type("#issue_body",content);
