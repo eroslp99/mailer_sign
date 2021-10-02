@@ -3,8 +3,8 @@ name: github_post
 on:
   repository_dispatch:
   workflow_dispatch:
-  # schedule:
-  #   - cron: '*/30 * * * *'
+  schedule:
+    - cron: '*/30 * * * *'
   watch:
     types: started
     

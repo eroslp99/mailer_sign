@@ -1,11 +1,18 @@
 const fs = require("fs");
-//const sqlite = require('./asqlite3.js')
 const puppeteer = require('puppeteer');
 const core = require('@actions/core');
 const github = require('@actions/github');
-const myfuns = require('./myfuns.js');
-Date.prototype.Format = myfuns.Format;
+const { tFormat, sleep, clearBrowser, getRndInteger, randomOne, randomString,findFrames  } = require('./common.js');
+//const { sbFreeok,login,loginWithCookies,resetPwd } = require('./utils.js');
 const runId = github.context.runId;
+let browser;
+let setup = {};
+if (!runId) {
+    setup  = JSON.parse(fs.readFileSync('./setup.json', 'utf8'));
+  }else{
+    setup  = JSON.parse(process.env.SETUP);
+  }
+let pwd = setup.pwd['163'];
 async function  main () {
     //console.log(await sqlite.open('./freeok.db'))
     const browser = await puppeteer.launch({ 
@@ -23,10 +30,11 @@ async function  main () {
     });
 
     let cookies = {};
-    cookies = JSON.parse(fs.readFileSync('./aiboboxx@163.com.json', 'utf8'));
-    await page.setCookie(...cookies);
+    //cookies = JSON.parse(fs.readFileSync('./aiboboxx@163.com.json', 'utf8'));
+    //await page.setCookie(...cookies);
     await page.goto('https://mail.163.com/',{ timeout: 60000 });
-  await page.waitForSelector('#loginDiv>iframe',{ timeout: 60000 });//等待我的iframe出现
+    await page.waitForSelector('#loginDiv>iframe',{ timeout: 60000 });//等待我的iframe出现
+    //await findFrames(page);
     const frame = ( await page.frames() )[3];//通过索引得到我的iframe
     await frame.waitForSelector('.j-inputtext.dlemail',{ timeout: 60000 });//等待用户名输入框出现
     await frame.type('.j-inputtext.dlemail','aiboboxx');//输入账户
@@ -35,9 +43,9 @@ async function  main () {
     await frame.click('#un-login');
     await frame.click('#dologin'); 
     //await frame.waitForNavigation();
-    await myfuns.Sleep(1000);
+    await sleep(1000);
     await page.waitForSelector("#_mail_icon_21_182");
-    await myfuns.Sleep(1000);
+    await sleep(1000);
     await page.evaluate('document.querySelector("#_mail_icon_21_182").click()');
     await page.waitForFunction(
         (selecter) => document.querySelector(selecter).innerText.includes("收取完成"),
@@ -45,7 +53,7 @@ async function  main () {
         'body'
       ).then(async ()=>{
           console.log("收取完成!");
-          await myfuns.Sleep(5000);
+          await sleep(5000);
           cookies = await page.cookies();
           fs.writeFileSync('./aiboboxx@163.com.json', JSON.stringify(cookies, null, '\t'))});
     if ( runId?true:false ) await browser.close();

@@ -1,11 +1,19 @@
 const fs = require("fs");
-//const sqlite = require('./asqlite3.js')
 const puppeteer = require('puppeteer');
 const core = require('@actions/core');
 const github = require('@actions/github');
-const myfuns = require('./myfuns.js');
-Date.prototype.Format = myfuns.Format;
+const { tFormat, sleep, clearBrowser, getRndInteger, randomOne, randomString,findFrames  } = require('./common.js');
+//const { sbFreeok,login,loginWithCookies,resetPwd } = require('./utils.js');
 const runId = github.context.runId;
+let browser;
+let setup = {};
+if (!runId) {
+    setup  = JSON.parse(fs.readFileSync('./setup.json', 'utf8'));
+  }else{
+    setup  = JSON.parse(process.env.SETUP);
+  }
+let usr = setup.usr['github'];
+let pwd = setup.pwd['github'];
 
 async function  main () {
     //console.log(await sqlite.open('./freeok.db'))
@@ -21,21 +29,39 @@ async function  main () {
         //console.info(`➞ ${dialog.message()}`);
         await dialog.dismiss();
     });
-
-    let cookies = {};
-    //let allck = JSON.parse(fs.readFileSync('./allck.json', 'utf8'));
-    cookies = JSON.parse(fs.readFileSync('./eroslp99@github.com.json', 'utf8'));
-    //cookies = allck['eroslp99@github.com'];
-    await page.setCookie(...cookies);
+    await page.goto('https://github.com/login');
+    await page.waitForSelector('#login_field',{ timeout: 60000 });//等待用户名输入框出现
+    await page.type('#login_field',usr);//输入账户
+    await page.waitForSelector('#password');//等待密码框出现
+    await page.type('#password',pwd);//输入密码
+    await page.click('#login > div.auth-form-body.mt-3 > form > div > input.btn.btn-primary.btn-block.js-sign-in-button');
+    //await page.waitForNavigation();
+    await sleep(1000);
+    await page.waitForFunction(
+        (selecter,string) => {
+            if (document.querySelector(selecter)){
+                //console.log("body",document.querySelector('body').innerText);
+                return document.querySelector(selecter).innerText.includes(string);
+            }else{
+                return false;
+            }
+        },
+        { timeout: 60000 },
+        'body',
+        'Repositories'
+    ) 
+    //let cookies = {};
+    //cookies = JSON.parse(fs.readFileSync('./eroslp99@github.com.json', 'utf8'));
+    //await page.setCookie(...cookies);
     await page.goto('https://github.com/freefq/free/issues/');
     let body =  await page.$eval('body', el => el.innerText);
     if (body.includes("免费白嫖公益v2ray机场订阅地址自助获取")){
         console.log("已存在！");
     }else{
         await page.goto('https://github.com/freefq/free/issues/new');
-        await myfuns.Sleep(1000);
+        await sleep(1000);
         await page.waitForSelector("#issue_title");
-        await myfuns.Sleep(1000);
+        await sleep(1000);
         await page.type("#issue_title",'免费白嫖公益v2ray机场订阅地址自助获取');
         let content = `
         免费白嫖公益v2ray机场订阅地址自助获取
@@ -49,12 +75,9 @@ async function  main () {
             'body'
           ).then(()=>{console.log("发布成功!");});
     }
-    //await page.click("#_mail_icon_21_182");
-    //await myfuns.Sleep(5000);
-    cookies = await page.cookies();
-    //allck['eroslp99@github.com'] = cookies;
-    //sqlite.close();
-    fs.writeFileSync('./eroslp99@github.com.json', JSON.stringify(cookies, null, '\t'))
+
+    //cookies = await page.cookies();
+    //fs.writeFileSync('./eroslp99@github.com.json', JSON.stringify(cookies, null, '\t'))
     if ( runId?true:false ) await browser.close();
 }
 main();

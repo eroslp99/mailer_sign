@@ -9,6 +9,14 @@ const puppeteer = require('puppeteer-extra')
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 puppeteer.use(StealthPlugin())
 Date.prototype.Format = myfuns.Format;
+let browser;
+let setup = {};
+if (!runId) {
+    setup  = JSON.parse(fs.readFileSync('./setup.json', 'utf8'));
+  }else{
+    setup  = JSON.parse(process.env.SETUP);
+  }
+let pwd = setup.pwd['fqd'];
 async function  autoPost (page) {
     let selecter = '';
     let cookies = {};
@@ -21,7 +29,7 @@ async function  autoPost (page) {
         {timeout:10000},
         'body'
       )
-      .then(async ()=>{console.log("无需验证");await myfuns.Sleep(1000);})
+      .then(async ()=>{console.log("无需验证");await sleep(1000);})
       .catch(async (error)=>{
           console.log('需要验证: ', error.message);
           await page.goto('https://accounts.hcaptcha.com/verify_email/ebf36f8b-0722-4253-9d81-94193b9c91e7');
@@ -36,9 +44,9 @@ async function  autoPost (page) {
               (selecter) => document.querySelector(selecter).innerText.includes("Cookie集"),
               {timeout:10000},
               '#root > div > div.sc-fKgJPI.cxbltl > div > div.sc-ikXwFM.sc-uxdHp.hZHGfK.fiDOnB > span'
-            ).then(async ()=>{console.log("设置Cookie集成功");await myfuns.Sleep(1000);}); */
+            ).then(async ()=>{console.log("设置Cookie集成功");await sleep(1000);}); */
 /*           await page.goto('https://fanqiangdang.com/forum.php');
-          await myfuns.Sleep(10000);
+          await sleep(10000);
           await page.waitForSelector('#cf-hcaptcha-container > iframe',{timeout:10000})
           .catch(error => console.log('#cf-hcaptcha-container > iframe: ', error.message)); 
           const frames = await page.mainFrame().childFrames();   
@@ -57,7 +65,7 @@ async function  autoPost (page) {
                   )
                   .then(async ()=>{
                       console.log("登录成功");
-                      await myfuns.Sleep(1000);
+                      await sleep(1000);
                       cookies = await page.cookies();
                       //allck['aiboboxx@163.com'] = cookies;
                       //sqlite.close();
@@ -72,7 +80,7 @@ async function  autoPost (page) {
     await page.waitForSelector(selecter,{timeout:30000})
     .catch(async ()=>{
         console.log ('等待输入用户名');
-        await myfuns.Sleep(3000);
+        await sleep(3000);
         //await page.goto('https://fanqiangdang.com/forum.php');
         await page.waitForSelector(selecter,{timeout:10000});
     });
@@ -104,10 +112,10 @@ async function  autoPost (page) {
     selecter = '#typeid_ctrl';
     await page.waitForSelector(selecter);
     await page.click(selecter);
-    await myfuns.Sleep(500);
+    await sleep(500);
     selecter = '#typeid_ctrl_menu > ul > li:nth-child(3)';
     await page.click(selecter);
-    await myfuns.Sleep(500);
+    await sleep(500);
     selecter = '#subject';
     await page.type(selecter,
         ` 高速稳定 秒开4k Vmess/V2ray节点,长期可用  ${(new Date()).Format("yyyy-MM-dd hh:mm:ss") }更新`

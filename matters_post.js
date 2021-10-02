@@ -14,7 +14,7 @@ async function  mattersPost (rsss,page) {
     selecter = '#__next > div > main > article > header > section > section > section > button.jsx-2415535273.container.isTransparent.centering-y.spacing-x-loose.bg-active-grey-lighter > div > div';
     await page.waitForSelector(selecter);
     await page.click(selecter);
-    await myfuns.Sleep(2000);
+    await sleep(2000);
     await page.waitForSelector('#field-email',{timeout:5000}).catch(async ()=>{        
         await page.click(selecter);
         await page.waitForSelector('#field-email',{timeout:5000})

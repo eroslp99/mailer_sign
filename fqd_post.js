@@ -3,13 +3,13 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const myfuns = require('./myfuns.js');
 const url = require('url');
-// puppeteer-extra is a drop-in replacement for puppeteer,
-// it augments the installed puppeteer with plugin functionality
 const puppeteer = require('puppeteer-extra');
 // add stealth plugin and use defaults (all evasion techniques)
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
-Date.prototype.Format = myfuns.Format;
+const { tFormat, sleep, clearBrowser, getRndInteger, randomOne, randomString } = require('./common.js');
+const { sbFreeok,login,loginWithCookies,resetPwd } = require('./utils.js');
+Date.prototype.format = tFormat;
 const runId = github.context.runId;
 let browser;
 let setup = {};
@@ -37,10 +37,10 @@ async function autoPost(page) {
         { timeout: 60000 },
         'body'
     )
-        .then(async () => { console.log("无需验证"); await myfuns.Sleep(1000); })
+        .then(async () => { console.log("无需验证"); await sleep(1000); })
         .catch(async () => { 
             await page.evaluate(() =>console.log(document.querySelector('body').innerText)); 
-            await myfuns.Sleep(1000); 
+            await sleep(1000); 
         });
 /*         .catch(async (error) => {
             console.log('需要验证 ');
@@ -51,13 +51,13 @@ async function autoPost(page) {
                     console.log('设置cookie按钮不存在');
                     return Promise.reject(new Error('设置cookie按钮不存在'));
                 });
-            await myfuns.Sleep(3000);
+            await sleep(3000);
             await page.click(selecter);
             await page.waitForFunction(
                 (selecter) => document.querySelector(selecter).innerText.includes("Cookie集"),
                 { timeout: 20000 },
                 '#root > div > div.sc-fKgJPI.cxbltl > div > div.sc-ikXwFM.sc-uxdHp.hZHGfK.fiDOnB > span'
-            ).then(async () => { console.log("设置Cookie集成功"); await myfuns.Sleep(1000); })
+            ).then(async () => { console.log("设置Cookie集成功"); await sleep(1000); })
                 .catch(async (error) => {
                     console.log('重新获取cookie集');
                     await page.goto('https://accounts.hcaptcha.com/verify_email/56b6e35c-a87d-474e-8087-49e5c596be27');
@@ -67,7 +67,7 @@ async function autoPost(page) {
                             console.log('设置cookie按钮不存在');
                             return  Promise.reject(new Error('设置cookie按钮不存在'));
                         });
-                    await myfuns.Sleep(3000);
+                    await sleep(3000);
                     await page.click(selecter);
                     await page.waitForFunction(
                         (selecter) => document.querySelector(selecter).innerText.includes("Cookie集"),
@@ -79,9 +79,9 @@ async function autoPost(page) {
                             return Promise.resolve('获取cookie集失败');
                         });
                 });
-            await myfuns.Sleep(1000);
+            await sleep(1000);
             await page.goto('https://fanqiangdang.com/forum.php');
-            await myfuns.Sleep(10000);
+            await sleep(10000);
             const frames = await page.mainFrame().childFrames();
             let i = 0;
             for (let frame of frames) {
@@ -97,7 +97,7 @@ async function autoPost(page) {
                     )
                         .then(async () => {
                             console.log("进入首页");
-                            await myfuns.Sleep(1000);
+                            await sleep(1000);
                         })
                         .catch(async () => {
                             console.log('未过验证');
@@ -107,7 +107,7 @@ async function autoPost(page) {
                 }
             }
         }); */
-    //await myfuns.Sleep(6000); 
+    //await sleep(6000); 
     console.log("翻墙论坛登录");   
     await page.waitForFunction(
         (selecter) => document.querySelector(selecter).innerText.includes("eroslp"),
@@ -116,7 +116,7 @@ async function autoPost(page) {
     )
         .then(async () => {
             console.log("已登录");
-            await myfuns.Sleep(1000);
+            await sleep(1000);
         })
         .catch(async (error) => {
             console.log('未登录 ');
@@ -124,13 +124,13 @@ async function autoPost(page) {
             await page.waitForSelector(selecter, { timeout: 30000 })
                 .catch(async () => {
                     console.log('等待输入用户名');
-                    await myfuns.Sleep(3000);
+                    await sleep(3000);
                     await page.waitForSelector(selecter, { timeout: 10000 });
                 });
             await page.evaluate(() => document.querySelector('#ls_username').value = 'eroslp').then(() => console.log('用户名：eroslp'));
             await page.evaluate(pwd => document.querySelector('#ls_password').value = pwd,pwd).then(()=>console.log('密码'));
             await page.evaluate(() => document.querySelector("#ls_cookietime").click()).then(() => console.log('自动登录'));
-            await myfuns.Sleep(3000);  
+            await sleep(3000);  
             selecter = '.pn.vm';
             await Promise.all([
                 page.waitForNavigation({ timeout: 20000 }),
@@ -151,29 +151,29 @@ async function autoPost(page) {
                 });
         });
         console.log("发贴");
-    await myfuns.Sleep(500);
+    await sleep(500);
     await page.goto('https://fanqiangdang.com/forum.php?mod=post&action=newthread&fid=36').catch((err)=>console.log('页面超时'));;
-    await myfuns.Sleep(2000);
+    await sleep(2000);
     selecter = '#typeid_ctrl';
     await page.waitForSelector(selecter);
     await page.click(selecter);
     
-    await myfuns.Sleep(2000);
+    await sleep(2000);
     selecter = '#typeid_ctrl_menu > ul > li:nth-child(2)';
     await page.waitForSelector(selecter);
     //await page.click(selecter);
     await page.evaluate(() => document.querySelector('#typeid_ctrl_menu > ul > li:nth-child(2)').click());
-    await myfuns.Sleep(2000);
+    await sleep(2000);
     selecter = '#subject';
     await page.waitForSelector(selecter);
     await page.type(selecter,
-        ` 高速稳定 秒开4k Vmess/V2ray节点,长期可用  ${(new Date()).Format("yyyy-MM-dd hh:mm:ss")}更新`
+        ` 高速稳定 秒开4k Vmess/V2ray节点,长期可用  ${(new Date()).format("yyyy-MM-dd hh:mm:ss")}更新`
     );
     let content = `
     网速：10+Mbps网速，720-1080P支持；
     延迟：50ms+延迟，UDP加速器支持，KCP支持；
     节点：香港、新加坡、日本、韩国等100+数量全球节点，高速稳定 秒开4k 支持网飞
-    ${(new Date()).Format("yyyy-MM-dd")}更新
+    ${(new Date()).format("yyyy-MM-dd")}更新
     节点公开后容易失效，
     请到 https://www.aiboboxx.ml/post/free-v2ray/ 
     获取私人专属v2ray订阅地址，长期可用。资源有限，先到先得。
@@ -210,30 +210,30 @@ async function v2raya() {
       await page.type(selecter, "eroslp");
       await page.type("#login > div.animation-content > div > section > div:nth-child(3) > div > input", setup.pwd_v2raya);
       await page.click("#login > div.animation-content > div > footer > button > span");
-      await myfuns.Sleep(2000);
+      await sleep(2000);
       await page.waitForSelector("#app > nav > div.navbar-menu > div.navbar-end > a:nth-child(1)",{timeout:15000});
       await page.click("#app > nav > div.navbar-menu > div.navbar-end > a:nth-child(1)");
-      await myfuns.Sleep(2000);
+      await sleep(2000);
       await page.waitForSelector("body > div.modal.is-active > div.animation-content > div > footer > button.button.is-primary",{timeout:15000})
       .catch(async (error) => {
         console.log('clickerror: ', error.message);
         await page.click("#app > nav > div.navbar-menu > div.navbar-end > a:nth-child(1)")
         .then(()=>{console.log('clickagain')});
-      await myfuns.Sleep(2000);
+      await sleep(2000);
       await page.waitForSelector("body > div.modal.is-active > div.animation-content > div > footer > button.button.is-primary",{timeout:15000})
       .catch(async (error)=>{console.log('error: ', error.message);});
       });
       console.log('click保存')
       await page.click("body > div.modal.is-active > div.animation-content > div > footer > button.button.is-primary")
       .catch(error => console.log('clickerror: ', error.message));
-      await myfuns.Sleep(2000);
+      await sleep(2000);
       await page.close();
       await browser.close();
-    await myfuns.Sleep(2000);
+    await sleep(2000);
   }
 async function main() {
     //await v2raya();
-    //await myfuns.Sleep(2000);
+    //await sleep(2000);
     browser = await puppeteer.launch({
         headless: runId ? true : false,
         //slowMo: 150,
