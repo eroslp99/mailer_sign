@@ -29,7 +29,7 @@ async function  main () {
         //console.info(`➞ ${dialog.message()}`);
         await dialog.dismiss();
     });
-    await page.goto('https://github.com/login');
+    await page.goto('https://github.com/login').then(async () => { console.log("登录");});
     await page.waitForSelector('#login_field',{ timeout: 60000 });//等待用户名输入框出现
     await page.type('#login_field',usr);//输入账户
     await page.waitForSelector('#password');//等待密码框出现
@@ -41,7 +41,7 @@ async function  main () {
     //let cookies = {};
     //cookies = JSON.parse(fs.readFileSync('./eroslp99@github.com.json', 'utf8'));
     //await page.setCookie(...cookies);
-    await page.goto('https://github.com/freefq/free/issues/');
+    await page.goto('https://github.com/freefq/free/issues/').then(async () => { console.log("目标页面");});;
     let body =  await page.$eval('body', el => el.innerText);
     if (body.includes("免费白嫖公益v2ray机场订阅地址自助获取")){
         console.log("已存在！");
