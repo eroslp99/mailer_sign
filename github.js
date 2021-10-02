@@ -37,33 +37,42 @@ async function  main () {
     await page.click('#login > div.auth-form-body.mt-3 > form > div > input.btn.btn-primary.btn-block.js-sign-in-button');
     //await page.waitForNavigation();
     await sleep(1000);
-    await waitForString(page,'body','Repositories').catch(async ()=>{console.log(await page.$eval('body', el => el.innerText));});
+    await waitForString(page,'body','Repositories')
+    .then(()=>{console.log("登录成功");})
+    .catch(async ()=>{console.log(await page.$eval('body', el => el.innerText));});
+  
     //let cookies = {};
     //cookies = JSON.parse(fs.readFileSync('./eroslp99@github.com.json', 'utf8'));
     //await page.setCookie(...cookies);
-    await page.goto('https://github.com/freefq/free/issues/').then(async () => { console.log("目标页面");});;
-    let body =  await page.$eval('body', el => el.innerText);
-    if (body.includes("免费白嫖公益v2ray机场订阅地址自助获取")){
-        console.log("已存在！");
-    }else{
-        await page.goto('https://github.com/freefq/free/issues/new');
-        await sleep(1000);
-        await page.waitForSelector("#issue_title");
-        await sleep(1000);
-        await page.type("#issue_title",'免费白嫖公益v2ray机场订阅地址自助获取');
-        let content = `
-        免费白嫖公益v2ray机场订阅地址自助获取
-        https://www.aiboboxx.ml/post/free-v2ray/
-          `;
-        await page.type("#issue_body",content);
-        await page.evaluate('document.querySelector("#new_issue > div > div > div.flex-shrink-0.col-12.col-md-9.mb-4.mb-md-0 > div > div.timeline-comment.color-bg-canvas.hx_comment-box--tip > div > div.flex-items-center.flex-justify-end.mx-2.mb-2.px-0.d-none.d-md-flex > button").click()');
-        await page.waitForFunction(
-            (selecter) => document.querySelector(selecter).innerText.includes("免费白嫖公益v2ray机场订阅地址自助获取"),
-            {timeout:6000},
-            'body'
-          ).then(()=>{console.log("发布成功!");});
-    }
-
+    let urls =[];
+    urls.push('https://github.com/freefq/free/issues/');
+    for (let url of urls){
+      _post(url);
+    } 
+    async function _post(url){
+      await page.goto(url).then(async () => { console.log("目标页面");});;
+      let body =  await page.$eval('body', el => el.innerText);
+      if (body.includes("免费白嫖公益v2ray机场订阅地址自助获取")){
+          console.log("已存在！");
+      }else{
+          await page.goto(url+'new');
+          await sleep(1000);
+          await page.waitForSelector("#issue_title");
+          await sleep(1000);
+          await page.type("#issue_title",'免费白嫖公益v2ray机场订阅地址自助获取');
+          let content = `
+          免费白嫖公益v2ray机场订阅地址自助获取
+          https://www.aiboboxx.ml/post/free-v2ray/
+            `;
+          await page.type("#issue_body",content);
+          await page.evaluate('document.querySelector("#new_issue > div > div > div.flex-shrink-0.col-12.col-md-9.mb-4.mb-md-0 > div > div.timeline-comment.color-bg-canvas.hx_comment-box--tip > div > div.flex-items-center.flex-justify-end.mx-2.mb-2.px-0.d-none.d-md-flex > button").click()');
+          await page.waitForFunction(
+              (selecter) => document.querySelector(selecter).innerText.includes("免费白嫖公益v2ray机场订阅地址自助获取"),
+              {timeout:6000},
+              'body'
+            ).then(()=>{console.log("发布成功!");});
+      }
+      }
     //cookies = await page.cookies();
     //fs.writeFileSync('./eroslp99@github.com.json', JSON.stringify(cookies, null, '\t'))
     if ( runId?true:false ) await browser.close();
