@@ -46,9 +46,9 @@ async function findFrames (page) {
 exports.findFrames = findFrames ;
 exports.findFrame = async function (page,url) {
     const frames = await page.mainFrame().childFrames();   
-    let i = 0;
+    //let i = 0;
     for (let frame of frames){
-        i++;
+        //i++;
 		//console.log(i,frame.url(),frame.setContent(i));
         if (frame.url().includes(url)) return frame;
 	}
@@ -72,7 +72,7 @@ exports.randomString =  function randomString(length, chars) {
     for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
     return result;
   }
-exports.waitForString =  async function waitForString(page,selecter,string) {
+exports.waitForString =  async function waitForString(page,selecter,string,timeout = 30000) {
   await page.waitForFunction(
     (selecter,string) => {
         if (document.querySelector(selecter)){
@@ -82,9 +82,27 @@ exports.waitForString =  async function waitForString(page,selecter,string) {
             return false;
         }
     },
-    { timeout: 60000 },
+    { timeout: timeout },
     selecter,
     string
 ) 
 
   }
+
+  exports.sleepSync =   function sleepSync(delay) {
+    var start = new Date().getTime();
+    while (new Date().getTime() < start + delay);
+  }
+  exports.spawnLog = function spawnLog(spawn){
+    spawn.stdout.on('data', (data) => {
+        console.log(data.toString());
+      });
+      
+      spawn.stderr.on('data', (data) => {
+        console.error(data.toString());
+      });
+      
+      spawn.on('exit', (code) => {
+        console.log(`Child exited with code ${code}`);
+      });
+}
