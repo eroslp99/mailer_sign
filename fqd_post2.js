@@ -119,7 +119,7 @@ async function autoPost(page) {
                 .catch(async () => {
                     console.log('等待输入用户名');
                     await sleep(3000);
-                    await page.waitForSelector(selecter, { timeout: 10000 });
+                    await page.waitForSelector(selecter, { timeout: 30000 });
                 });
             await page.evaluate(() => document.querySelector('#ls_username').value = 'eroslp').then(() => console.log('用户名：eroslp'));
             await page.evaluate(pwd => document.querySelector('#ls_password').value = pwd,pwd).then(()=>console.log('密码'));
