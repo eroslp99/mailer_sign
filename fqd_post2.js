@@ -114,12 +114,14 @@ async function autoPost(page) {
         })
         .catch(async (error) => {
             console.log('未登录 ');
+            console.log(await page.$eval('body', el => el.innerText));
             selecter = '#ls_username';
             await page.waitForSelector(selecter, { timeout: 30000 })
                 .catch(async () => {
                     console.log('等待输入用户名');
                     await sleep(3000);
-                    await page.waitForSelector(selecter, { timeout: 30000 });
+                    await page.waitForSelector(selecter, { timeout: 30000 })
+                    .catch(async ()=>{console.log(await page.$eval('body', el => el.innerText));});
                 });
             await page.evaluate(() => document.querySelector('#ls_username').value = 'eroslp').then(() => console.log('用户名：eroslp'));
             await page.evaluate(pwd => document.querySelector('#ls_password').value = pwd,pwd).then(()=>console.log('密码'));
