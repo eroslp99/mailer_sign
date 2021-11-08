@@ -47,6 +47,7 @@ async function  main () {
     let urls =[];
     //urls.push('https://github.com/freefq/free/issues');
     urls.push('https://github.com/zhoushuai0207/ladder/issues');
+    urls.push('https://github.com/Alvin9999/new-pac/issues');
     for (let url of urls){
       console.log(url);
       await _post(url);
@@ -68,13 +69,13 @@ async function  main () {
           https://www.aiboboxx.ml/post/free-v2ray/
             `;
           await page.type("#issue_body",content);
-          await page.evaluate('document.querySelector("#new_issue > div > div > div.flex-shrink-0.col-12.col-md-9.mb-4.mb-md-0 > div > div.timeline-comment.color-bg-canvas.hx_comment-box--tip > div > div.flex-items-center.flex-justify-end.mx-2.mb-2.px-0.d-none.d-md-flex > button").click()');
+          await page.evaluate('document.querySelector("#new_issue > div > div > div.Layout-main > div > div.timeline-comment.color-bg-default.hx_comment-box--tip > div > div.flex-items-center.flex-justify-end.mx-2.mb-2.px-0.d-none.d-md-flex > button").click()');
 /*           await page.waitForFunction(
               (selecter) => document.querySelector(selecter).innerText.includes("免费白嫖公益v2ray机场订阅地址自助获取"),
               {timeout:6000},
               'body'
             ).then(()=>{console.log("发布成功!");}); */
-          await waitForString(page,'body','免费白嫖公益v2ray机场订阅地址自助获取',3000).catch(async (error)=>{console.log('error: ', error.message);}) 
+          await waitForString(page,'body','免费白嫖公益v2ray机场订阅地址自助获取',10000).catch(async (error)=>{console.log('error: ', error.message);}) 
       }
           
       }

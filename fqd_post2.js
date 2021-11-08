@@ -35,7 +35,11 @@ async function autoPost(page) {
         },
         { timeout: 60000 },
         'body'
-    )      .then(async () => { console.log("无需验证"); await sleep(1000); });
+    )      .then(async () => { console.log("无需验证"); await sleep(1000); })
+            .catch(async () => { 
+            await page.evaluate(() =>console.log(document.querySelector('body').innerText)); 
+            await sleep(1000); 
+        });
 /*         .catch(async (error) => {
             console.log('需要验证 ');
             await page.goto('https://accounts.hcaptcha.com/verify_email/6234aa23-5ee5-4f5e-b1d9-1187660ea55c');
@@ -101,8 +105,8 @@ async function autoPost(page) {
                 }
             }
         }); */
-    //await sleep(6000);    
-    console.log("登录");
+    //await sleep(6000); 
+    console.log("翻墙论坛登录");   
     await page.waitForFunction(
         (selecter) => document.querySelector(selecter).innerText.includes("eroslp"),
         { timeout: 3000 },

@@ -151,7 +151,7 @@ async function autoPost(page) {
                             });
                 });
         });
-        console.log("发贴");
+        console.log("发帖");    
     await sleep(500);
     await page.goto('https://fanqiangdang.com/forum.php?mod=post&action=newthread&fid=36').catch((err)=>console.log('页面超时'));;
     await sleep(2000);
@@ -192,8 +192,6 @@ async function autoPost(page) {
 }
 
 async function main() {
-    //await v2raya();
-    //await sleep(2000);
     browser = await puppeteer.launch({
         headless: runId ? true : false,
         //slowMo: 150,
