@@ -47,7 +47,7 @@ async function  main () {
     let urls =[];
     //urls.push('https://github.com/freefq/free/issues');
     urls.push('https://github.com/zhoushuai0207/ladder/issues');
-    urls.push('https://github.com/Alvin9999/new-pac/issues');
+    //urls.push('https://github.com/Alvin9999/new-pac/issues');
     for (let url of urls){
       console.log(url);
       await _post(url);

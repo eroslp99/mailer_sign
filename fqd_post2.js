@@ -206,12 +206,13 @@ async function main() {
             '--no-sandbox',
             '--disable-setuid-sandbox',
             '--disable-blink-features=AutomationControlled',
-            setup.proxy
+            setup.proxy.normal
         ],
         defaultViewport: null,
         ignoreHTTPSErrors: true,
     });
     const page = await browser.newPage();
+    await page.authenticate({username:setup.proxy.usr, password:setup.proxy.pwd});
     page.on('dialog', async dialog => {
         //console.info(`➞ ${dialog.message()}`);
         await dialog.dismiss();
