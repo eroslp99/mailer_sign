@@ -1,8 +1,8 @@
-const fs = require("fs")
+const fs = require("fs");
 const core = require('@actions/core');
 const github = require('@actions/github');
 const url = require('url');
-const puppeteer = require('puppeteer-extra')
+const puppeteer = require('puppeteer-extra');
 // add stealth plugin and use defaults (all evasion techniques)
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 puppeteer.use(StealthPlugin())
@@ -20,14 +20,17 @@ if (!runId) {
 let pwd = setup.pwd['fqd'];
 //console.log("pwd:",pwd,process.env.PWD_FQD);
 async function autoPost(page) {
+    let cookies = {};
+    cookies = JSON.parse(fs.readFileSync('./cookies.json', 'utf8'));
+    await page.setCookie(...cookies);
+    console.log("写入cookies");
     let selecter = '';
     await page.goto('https://fanqiangdang.com/forum.php',{timeout: 60000})
     .catch(error => console.log('首页超时'));
-    console.log("翻墙论坛");
+    console.log("等待首页");
     await page.waitForFunction(
         (selecter) => {
             if (document.querySelector(selecter)){
-                console.log("body",document.querySelector('body').innerText);
                 return document.querySelector(selecter).innerText.includes("翻墙论坛");
             }else{
                 return false;
@@ -35,78 +38,15 @@ async function autoPost(page) {
         },
         { timeout: 60000 },
         'body'
-    )      .then(async () => { console.log("无需验证"); await sleep(1000); })
-            .catch(async () => { 
-            await page.evaluate(() =>console.log(document.querySelector('body').innerText)); 
+    )
+        .then(async () => { console.log("无5秒盾"); await sleep(1000); })
+        .catch(async () => { 
+            console.log(await page.$eval('body', el => el.innerText));
+            //await page.$eval('body', el => el.innerText);
             await sleep(1000); 
         });
-/*         .catch(async (error) => {
-            console.log('需要验证 ');
-            await page.goto('https://accounts.hcaptcha.com/verify_email/6234aa23-5ee5-4f5e-b1d9-1187660ea55c');
-            selecter = "#root > div > div.sc-fKgJPI.cxbltl > div > div.sc-ikXwFM.sc-uxdHp.hZHGfK.fiDOnB > button";
-            await page.waitForSelector(selecter, { timeout: 20000 })
-                .catch(async () => {
-                    console.log('设置cookie按钮不存在');
-                    return Promise.reject(new Error('设置cookie按钮不存在'));
-                });
-            await sleep(3000);
-            await page.click(selecter);
-            await page.waitForFunction(
-                (selecter) => document.querySelector(selecter).innerText.includes("Cookie集"),
-                { timeout: 20000 },
-                '#root > div > div.sc-fKgJPI.cxbltl > div > div.sc-ikXwFM.sc-uxdHp.hZHGfK.fiDOnB > span'
-            ).then(async () => { console.log("设置Cookie集成功"); await sleep(1000); })
-                .catch(async (error) => {
-                    console.log('重新获取cookie集');
-                    await page.goto('https://accounts.hcaptcha.com/verify_email/56b6e35c-a87d-474e-8087-49e5c596be27');
-                    selecter = "#root > div > div.sc-fKgJPI.cxbltl > div > div.sc-ikXwFM.sc-uxdHp.hZHGfK.fiDOnB > button";
-                    await page.waitForSelector(selecter, { timeout: 20000 })
-                        .catch(async () => {
-                            console.log('设置cookie按钮不存在');
-                            return  Promise.reject(new Error('设置cookie按钮不存在'));
-                        });
-                    await sleep(3000);
-                    await page.click(selecter);
-                    await page.waitForFunction(
-                        (selecter) => document.querySelector(selecter).innerText.includes("Cookie集"),
-                        { timeout: 20000 },
-                        '#root > div > div.sc-fKgJPI.cxbltl > div > div.sc-ikXwFM.sc-uxdHp.hZHGfK.fiDOnB > span'
-                    )
-                        .catch(async () => {
-                            console.log('获取cookie集失败');
-                            return Promise.resolve('获取cookie集失败');
-                        });
-                });
-            await sleep(1000);
-            await page.goto('https://fanqiangdang.com/forum.php');
-            await sleep(10000);
-            const frames = await page.mainFrame().childFrames();
-            let i = 0;
-            for (let frame of frames) {
-                i++;
-                console.log(frame.url());
-                if (frame.url().includes('hcaptcha-checkbox.html')) {
-                    await frame.waitForSelector('#checkbox', { timeout: 60000 }).catch(error => console.log('#checkbox: ', error.message));
-                    await frame.click('#checkbox');
-                    await page.waitForFunction(
-                        (selecter) => document.querySelector(selecter).innerText.includes("翻墙论坛"),
-                        { timeout: 30000 },
-                        'body'
-                    )
-                        .then(async () => {
-                            console.log("进入首页");
-                            await sleep(1000);
-                        })
-                        .catch(async () => {
-                            console.log('未过验证');
-                            return Promise.reject(new Error('未过验证'));
-                        });
-                    break;
-                }
-            }
-        }); */
-    //await sleep(6000); 
-    console.log("翻墙论坛登录");   
+
+    console.log("是否已登录");   
     await page.waitForFunction(
         (selecter) => document.querySelector(selecter).innerText.includes("eroslp"),
         { timeout: 3000 },
@@ -194,12 +134,14 @@ async function autoPost(page) {
     await page.waitForSelector(selecter);
     await page.click(selecter);
     await page.waitForNavigation();
+    cookies = await page.cookies();
+    fs.writeFileSync('./cookies.json', JSON.stringify(cookies, null, '\t'))
 }
 
 async function main() {
-    //await v2raya();
     browser = await puppeteer.launch({
-        headless: runId ? true : false,
+        headless: true,
+        //headless: runId ? true : false,
         //slowMo: 150,
         args: [
             '--window-size=1920,1080',
@@ -208,8 +150,9 @@ async function main() {
             '--disable-blink-features=AutomationControlled',
             setup.proxy.normal
         ],
+        dumpio: false,
         defaultViewport: null,
-        ignoreHTTPSErrors: true,
+        ignoreHTTPSErrors: true
     });
     const page = await browser.newPage();
     await page.authenticate({username:setup.proxy.usr, password:setup.proxy.pwd});
@@ -231,6 +174,21 @@ async function main() {
             interceptedRequest.continue();
         }
     })
+        // WebGL设置
+await page.evaluateOnNewDocument(() => {
+    const getParameter = WebGLRenderingContext.getParameter;
+    WebGLRenderingContext.prototype.getParameter = function (parameter) {
+        // UNMASKED_VENDOR_WEBGL
+        if (parameter === 37445) {
+            return 'Intel Inc.';
+        }
+        // UNMASKED_RENDERER_WEBGL
+        if (parameter === 37446) {
+            return 'Intel(R) Iris(TM) Graphics 6100';
+        }
+        return getParameter(parameter);
+    };
+});
     console.log(`*****************开始fqd发帖 ${Date()}*******************\n`);
     await autoPost(page).then(() => {
         console.log('fqd发帖成功');
