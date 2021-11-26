@@ -105,5 +105,5 @@ dist
 
 #customize
 .vscode/
-userdata/
 setup.json
+.history/

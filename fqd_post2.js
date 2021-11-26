@@ -150,9 +150,9 @@ async function main() {
             '--disable-blink-features=AutomationControlled',
             setup.proxy.normal
         ],
-        dumpio: false,
         defaultViewport: null,
-        ignoreHTTPSErrors: true
+        ignoreHTTPSErrors: true,
+        dumpio: false
     });
     const page = await browser.newPage();
     await page.authenticate({username:setup.proxy.usr, password:setup.proxy.pwd});

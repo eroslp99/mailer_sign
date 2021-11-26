@@ -134,8 +134,8 @@ async function autoPost(page) {
 
 async function main() {
     browser = await puppeteer.launch({
-        headless: true,
-        //headless: runId ? true : false,
+        //headless: true,
+        headless: runId ? true : false,
         //slowMo: 150,
         args: [
             '--window-size=1920,1080',
@@ -144,9 +144,9 @@ async function main() {
             '--disable-blink-features=AutomationControlled',
             setup.proxy.normal  
         ],
-        dumpio: false,
         defaultViewport: null,
-        ignoreHTTPSErrors: true
+        ignoreHTTPSErrors: true,
+        dumpio: false
     });
     const page = await browser.newPage();
     await page.authenticate({username:setup.proxy.usr, password:setup.proxy.pwd});
