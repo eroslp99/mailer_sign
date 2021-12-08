@@ -66,7 +66,7 @@ async function  main () {
           await page.type("#issue_title",'免费白嫖公益v2ray机场订阅地址自助获取');
           let content = `
           免费白嫖公益v2ray机场订阅地址自助获取
-          https://www.aiboboxx.ml/post/free-v2ray/
+          https://www.v2rayfree.eu.org/post/free-v2ray/
             `;
           await page.type("#issue_body",content);
           await page.evaluate('document.querySelector("#new_issue > div > div > div.Layout-main > div > div.timeline-comment.color-bg-default.hx_comment-box--tip > div > div.flex-items-center.flex-justify-end.mx-2.mb-2.px-0.d-none.d-md-flex > button").click()');

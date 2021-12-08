@@ -39,7 +39,7 @@ async function  mattersPost (rsss,page) {
 v2ray 免费点阅地址 ${(new Date()).Format("yyyy-MM-dd") }更新
 ${rsss}
 获取专属的私人订阅请留邮箱，或到以下地址获取
-https://www.aiboboxx.ml/post/v2ray-mian-fei-dian-yue-di-zhi
+https://www.v2rayfree.eu.org/post/v2ray-mian-fei-dian-yue-di-zhi
 `;
     await page.waitForSelector('#editor-article-container > div > div > div.ql-editor.ql-blank');
     await page.type('#editor-article-container > div > div > div.ql-editor.ql-blank', content);
