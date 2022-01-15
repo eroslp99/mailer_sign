@@ -111,8 +111,7 @@ await page.evaluateOnNewDocument(() => {
         return getParameter(parameter)
     }
 })
-    let cookies = []
-    cookies = JSON.parse(fs.readFileSync('./cnblog.json', 'utf8'))
+    let cookies = JSON.parse(fs.readFileSync('./cnblog.json', 'utf8'))
     await page.setCookie(...cookies)
     console.log("写入cookies")
     await page.goto('https://www.cnblogs.com/eroslp/')
