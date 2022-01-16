@@ -10,7 +10,7 @@ const { tFormat, sleep, clearBrowser, getRndInteger, randomOne, randomString } =
 const { sbFreeok,login,loginWithCookies,resetPwd } = require('./utils.js');
 Date.prototype.format = tFormat;
 const runId = github.context.runId;
-let browser;
+const ckfile = './fqd.json'
 let setup = {};
 if (!runId) {
     setup  = JSON.parse(fs.readFileSync('./setup.json', 'utf8'));
@@ -21,7 +21,7 @@ let pwd = setup.pwd['fqd'];
 //console.log("pwd:",pwd,process.env.PWD_FQD);
 async function autoPost(page) {
     let cookies = {};
-    cookies = JSON.parse(fs.readFileSync('./cookies.json', 'utf8'));
+    cookies = JSON.parse(fs.readFileSync(ckfile, 'utf8'));
     await page.setCookie(...cookies);
     console.log("写入cookies");
     let selecter = '';
@@ -135,13 +135,13 @@ async function autoPost(page) {
     await page.click(selecter);
     await page.waitForNavigation();
     cookies = await page.cookies();
-    fs.writeFileSync('./cookies.json', JSON.stringify(cookies, null, '\t'))
+    fs.writeFileSync(ckfile, JSON.stringify(cookies, null, '\t'))
 }
 
 async function main() {
-    browser = await puppeteer.launch({
+    const browser = await puppeteer.launch({
+        headless: runId ? true : false,
         headless: true,
-        //headless: runId ? true : false,
         //slowMo: 150,
         args: [
             '--window-size=1920,1080',
@@ -152,7 +152,6 @@ async function main() {
         ],
         defaultViewport: null,
         ignoreHTTPSErrors: true,
-        dumpio: false
     });
     const page = await browser.newPage();
     await page.authenticate({username:setup.proxy.usr, password:setup.proxy.pwd});
@@ -174,21 +173,6 @@ async function main() {
             interceptedRequest.continue();
         }
     })
-        // WebGL设置
-await page.evaluateOnNewDocument(() => {
-    const getParameter = WebGLRenderingContext.getParameter;
-    WebGLRenderingContext.prototype.getParameter = function (parameter) {
-        // UNMASKED_VENDOR_WEBGL
-        if (parameter === 37445) {
-            return 'Intel Inc.';
-        }
-        // UNMASKED_RENDERER_WEBGL
-        if (parameter === 37446) {
-            return 'Intel(R) Iris(TM) Graphics 6100';
-        }
-        return getParameter(parameter);
-    };
-});
     console.log(`*****************开始fqd发帖 ${Date()}*******************\n`);
     await autoPost(page).then(() => {
         console.log('fqd发帖成功');
