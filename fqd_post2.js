@@ -141,7 +141,7 @@ async function autoPost(page) {
 async function main() {
     const browser = await puppeteer.launch({
         headless: runId ? true : false,
-        headless: true,
+        //headless: true,
         //slowMo: 150,
         args: [
             '--window-size=1920,1080',
