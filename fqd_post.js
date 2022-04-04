@@ -8,6 +8,7 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
 const { tFormat, sleep, clearBrowser, getRndInteger, randomOne, randomString } = require('./common.js');
 const { sbFreeok,login,loginWithCookies,resetPwd } = require('./utils.js');
+const { cookie } = require("request");
 Date.prototype.format = tFormat;
 const runId = github.context.runId;
 const ckfile = './fqd.json'
@@ -20,8 +21,16 @@ if (!runId) {
 let pwd = setup.pwd['fqd'];
 //console.log("pwd:",pwd);
 async function autoPost(page) {
-    let cookies = {};
+    let cookies = {}
     cookies = JSON.parse(fs.readFileSync(ckfile, 'utf8'));
+    let ct = new Date()
+    ct.setMonth(ct.getMonth() + 1)
+    for (let cookie of cookies) {
+        cookie.expires =  ct.getTime()/1000
+        //console.log (cookie.name,cookie.expires)
+    } 
+    //console.log(JSON.stringify(cookies, null, '\t'))
+    //return
     await page.setCookie(...cookies);
     console.log("写入cookies");
     let selecter = '';
@@ -63,6 +72,7 @@ async function autoPost(page) {
             await page.waitForSelector(selecter, { timeout: 30000 })
                 .catch(async () => {
                     console.log('等待输入用户名');
+                    //await page.$eval('body', el => el.innerText)
                     await sleep(3000);
                     await page.waitForSelector(selecter, { timeout: 30000 })
                     .catch(async ()=>{console.log(await page.$eval('body', el => el.innerText));});
@@ -135,8 +145,7 @@ async function autoPost(page) {
 async function main() {
     const browser = await puppeteer.launch({
         headless: runId ? true : false,
-        //headless: true,
-        //slowMo: 150,
+        headless: true,
         args: [
             '--window-size=1920,1080',
             '--ignore-certificate-errors',
@@ -154,6 +163,29 @@ async function main() {
         await dialog.dismiss();
     });
     await page.setRequestInterception(true);
+      // permissions设置
+    await page.evaluateOnNewDocument(() => {
+    const originalQuery = window.navigator.permissions.query; //notification伪装
+    window.navigator.permissions.query = (parameters) =>
+        parameters.name === 'notifications'
+        ? Promise.resolve({ state: Notification.permission })
+        : originalQuery(parameters);
+  });
+      // WebGL设置
+    await page.evaluateOnNewDocument(() => {
+        const getParameter = WebGLRenderingContext.getParameter;
+        WebGLRenderingContext.prototype.getParameter = function (parameter) {
+            // UNMASKED_VENDOR_WEBGL
+            if (parameter === 37445) {
+                return 'Intel Inc.';
+            }
+            // UNMASKED_RENDERER_WEBGL
+            if (parameter === 37446) {
+                return 'Intel(R) Iris(TM) Graphics 6100';
+            }
+            return getParameter(parameter);
+        };
+    });
     //监听每一次请求，形参为请求对象
     page.on('request',(interceptedRequest)=>{
         //ite.url()获取请求url地址
@@ -171,7 +203,8 @@ async function main() {
     console.log(`*****************开始fqd发帖 ${Date()}*******************\n`);
     await autoPost(page).then(() => {
         console.log('fqd发帖成功');
-    }).catch(error => console.log('执行失败：', error.message));
+    })
+    .catch(error => console.log('执行失败：', error.message));
     //sqlite.close();
     if (runId ? true : false) await browser.close();
 }

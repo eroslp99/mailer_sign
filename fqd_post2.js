@@ -22,6 +22,12 @@ let pwd = setup.pwd['fqd'];
 async function autoPost(page) {
     let cookies = {};
     cookies = JSON.parse(fs.readFileSync(ckfile, 'utf8'));
+    let ct = new Date()
+    ct.setMonth(ct.getMonth() + 1)
+    for (let cookie of cookies) {
+        cookie.expires =  ct.getTime()/1000
+        //console.log (cookie.name,cookie.expires)
+    } 
     await page.setCookie(...cookies);
     console.log("写入cookies");
     let selecter = '';
@@ -142,7 +148,6 @@ async function main() {
     const browser = await puppeteer.launch({
         headless: runId ? true : false,
         //headless: true,
-        //slowMo: 150,
         args: [
             '--window-size=1920,1080',
             '--no-sandbox',
