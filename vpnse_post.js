@@ -105,13 +105,11 @@ async function autoPost(page) {
     await page.type(selecter,
         ` v2ray机场节点订阅 每日更新   ${(new Date()).format("yyyy-MM-dd")}`
     );
-    let content = `
-    v2ray机场订阅 每日更新 更新时间 ${(new Date()).format("yyyy-MM-dd")}
+    let content = `v2ray机场订阅 每日更新 更新时间 ${(new Date()).format("yyyy-MM-dd")}
     所有免费节点都爬取自网络，请勿用于非法用途
-    节点来自： https://github.com/aiboboxx/v2rayfree
-    [reply]
-    订阅地址： https://github.com/aiboboxx/v2rayfree
-    [/reply] 
+    节点来自： [v2ray机场订阅](https://github.com/aiboboxx/v2rayfree)
+
+    [reply]订阅地址： https://github.com/aiboboxx/v2rayfree[/reply] 
     `;
     //内容
     selecter = '#composer > div > div.Composer-content > div > div.ComposerBody-content > div > div > div > div > div.ComposerBody-emojiWrapper > textarea';
