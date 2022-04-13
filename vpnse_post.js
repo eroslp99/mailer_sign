@@ -10,14 +10,14 @@ const { tFormat, sleep, clearBrowser, getRndInteger, randomOne, randomString } =
 const { sbFreeok,login,loginWithCookies,resetPwd } = require('./utils.js');
 Date.prototype.format = tFormat;
 const runId = github.context.runId;
-const ckfile = './fqd.json'
+const ckfile = './vpnse.json'
 let setup = {};
 if (!runId) {
     setup  = JSON.parse(fs.readFileSync('./setup.json', 'utf8'));
   }else{
     setup  = JSON.parse(process.env.SETUP);
   }
-let pwd = setup.pwd['fqd'];
+let pwd = setup.pwd['vpnse'];
 
 //console.log("pwd:",pwd,process.env.PWD_FQD);
 async function autoPost(page) {
@@ -32,32 +32,32 @@ async function autoPost(page) {
     await page.setCookie(...cookies);
     console.log("写入cookies");
     let selecter = '';
-    await page.goto('https://fanqiangdang.com/forum.php',{timeout: 60000})
+    await page.goto('https://vpnse.org/',{timeout: 15000})
     .catch(error => console.log('首页超时'));
     console.log("等待首页");
     await page.waitForFunction(
         (selecter) => {
             if (document.querySelector(selecter)){
-                return document.querySelector(selecter).innerText.includes("翻墙论坛");
+                return document.querySelector(selecter).innerText.includes("VPNSE");
             }else{
                 return false;
             }
         },
-        { timeout: 60000 },
+        { timeout: 6000 },
         'body'
     )
-        .then(async () => { console.log("无5秒盾"); await sleep(1000); })
+        .then(async () => { console.log("进入首页"); await sleep(1000); })
         .catch(async () => { 
             console.log(await page.$eval('body', el => el.innerText));
             //await page.$eval('body', el => el.innerText);
             await sleep(1000); 
         });
 
-    console.log("是否已登录");   
+    //console.log("是否已登录");   
     await page.waitForFunction(
-        (selecter) => document.querySelector(selecter).innerText.includes("eroslp"),
+        (selecter) => document.querySelector(selecter).innerText.includes("aiboboxx"),
         { timeout: 3000 },
-        '#um > p:nth-child(2) > strong > a'
+        '#header-secondary > ul > li.item-session > div > button > span.Button-label > span'
     )
         .then(async () => {
             console.log("已登录");
@@ -65,52 +65,43 @@ async function autoPost(page) {
         })
         .catch(async (error) => {
             console.log('未登录 ');
-            console.log(await page.$eval('body', el => el.innerText));
-            selecter = '#ls_username';
-            await page.waitForSelector(selecter, { timeout: 30000 })
-                .catch(async () => {
-                    console.log('等待输入用户名');
-                    await sleep(3000);
-                    await page.waitForSelector(selecter, { timeout: 30000 })
-                    .catch(async ()=>{console.log(await page.$eval('body', el => el.innerText));});
-                });
-            await page.evaluate(() => document.querySelector('#ls_username').value = 'eroslp').then(() => console.log('用户名：eroslp'));
-            await page.evaluate(pwd => document.querySelector('#ls_password').value = pwd,pwd).then(()=>console.log('密码'));
-            await page.evaluate(() => document.querySelector("#ls_cookietime").click()).then(() => console.log('自动登录'));
-            await sleep(3000);  
-            selecter = '.pn.vm';
-            await Promise.all([
-                page.waitForNavigation({ timeout: 20000 }),
-                page.click(selecter)
-            ])
-                .then(() => console.log('登录成功'))
-                .catch(async (err) => {
-                    console.log("登录失败: " + err);
-                    await Promise.all([
-                        page.waitForNavigation({ timeout: 30000 }),
-                        page.evaluate(() => document.querySelector('#lsform > div > div > table > tbody > tr:nth-child(2) > td.fastlg_l > button').click())
-                    ])
-                        .then(() => console.log('又登录成功'),
-                            err => {
-                                console.log("又登录失败: " + err);
-                                return Promise.reject(new Error('登录失败，返回'));
-                            });
-                });
+            //console.log(await page.$eval('body', el => el.innerText));
+            selecter = '#header-secondary > ul > li.item-logIn > button > span';
+            await page.waitForSelector(selecter, { timeout: 10000 })
+            await page.click(selecter)
+            await sleep(1000)
+            selecter = "#modal > div > div > div > form > div.Modal-body > div.Form.Form--centered > div:nth-child(1) > input"
+            await page.waitForSelector(selecter, { timeout: 30000,visible: true })
+            await page.type(selecter,'aiboboxx').then(() => console.log('用户名：aiboboxx'))
+            selecter = "#modal > div > div > div > form > div.Modal-body > div.Form.Form--centered > div:nth-child(2) > input"
+            await page.type(selecter,pwd).then(() => console.log('密码'))
+            await page.click("#modal > div > div > div > form > div.Modal-body > div.Form.Form--centered > div:nth-child(3) > div > label > input[type=checkbox]")
+            await sleep(500)
+            await page.click("#modal > div > div > div > form > div.Modal-body > div.Form.Form--centered > div:nth-child(4) > button")
+            //await page.evaluate(pwd => document.querySelector('#ls_password').value = pwd,pwd).then(()=>console.log('密码'));
+            //await page.evaluate(() => document.querySelector("#ls_cookietime").click()).then(() => console.log('自动登录'));
+            await sleep(2000)
+            await page.waitForFunction(
+                (selecter) => document.querySelector(selecter).innerText.includes("aiboboxx"),
+                { timeout: 3000 },
+                '#header-secondary > ul > li.item-session > div > button > span.Button-label > span'
+            )
+            .then(() => console.log('登录成功'))
+            .catch(async (err) => {
+                console.log("登录失败: " + err);
+            });    
         });
-        console.log("发帖");    
+    console.log("发帖");    
     await sleep(500);
-    await page.goto('https://fanqiangdang.com/forum.php?mod=post&action=newthread&fid=51').catch((err)=>console.log('页面超时'));
-    await sleep(2000);
-    selecter = '#typeid_ctrl';
+    await page.goto('https://vpnse.org/t/freenode',{ timeout: 10000 }).catch((err)=>console.log('页面超时'));
+    //发布主题
+    selecter = '#content > div > div > div > nav > ul > li.item-newDiscussion.App-primaryControl > button > span';
     await page.waitForSelector(selecter);
     await page.click(selecter);
-    await sleep(2000);
-    selecter = '#typeid_ctrl_menu > ul > li:nth-child(3)';
-    await page.waitForSelector(selecter);
-    await page.evaluate(() => document.querySelector('#typeid_ctrl_menu > ul > li:nth-child(3)').click());
-    await sleep(2000);
-    selecter = '#subject';
-    await page.waitForSelector(selecter);
+    await sleep(1000);
+    //标题
+    selecter = '#composer > div > div.Composer-content > div > div.ComposerBody-content > ul > li.item-discussionTitle > h3 > input';
+    await page.waitForSelector(selecter,{ timeout: 10000,visible: true })
     await page.type(selecter,
         ` 免费公益v2ray机场节点订阅 每日更新   ${(new Date()).format("yyyy-MM-dd")}`
     );
@@ -122,21 +113,13 @@ async function autoPost(page) {
     订阅地址： https://github.com/aiboboxx/v2rayfree
     [/hide] 
     `;
-    //find frame index
-    /*     const frames = await page.mainFrame().childFrames();   
-        let i = 0;
-        for (let frame of frames){
-            i++;
-            console.log(frames.length,frame.setContent(i));//查看得到的frame列表数量
-        } */
-    //return;
-    let frame = (await page.mainFrame().childFrames())[2];
-    await frame.waitForSelector('body');
-    await frame.type('body', content);
-    selecter = '#postsubmit > span';
+    //内容
+    selecter = '#composer > div > div.Composer-content > div > div.ComposerBody-content > div > div > div > div > div.ComposerBody-emojiWrapper > textarea';
+    await page.type(selecter,content)
+    selecter = "#composer > div > div.Composer-content > div > div.ComposerBody-content > div > div > ul > li.item-submit.App-primaryControl > button > span"
     await page.waitForSelector(selecter);
-    await page.click(selecter);
-    await page.waitForNavigation();
+    await page.click(selecter)
+    await sleep(3000)
     cookies = await page.cookies();
     fs.writeFileSync(ckfile, JSON.stringify(cookies, null, '\t'))
 }
@@ -176,9 +159,9 @@ async function main() {
             interceptedRequest.continue();
         }
     })
-    console.log(`*****************开始fqd发帖 ${Date()}*******************\n`);
+    console.log(`*****************开始发帖 ${Date()}*******************\n`);
     await autoPost(page).then(() => {
-        console.log('fqd发帖成功');
+        console.log('发帖成功');
     }).catch(error => console.log('执行失败：', error.message));
     //sqlite.close();
     if (runId ? true : false) await browser.close();
