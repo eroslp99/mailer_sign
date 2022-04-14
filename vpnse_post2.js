@@ -124,7 +124,6 @@ async function autoPost(page) {
     await page.type(selecter,content)
     //await page.evaluate((selecter,content) => document.querySelector(selecter).innerText = content,selecter,content)
     await sleep(1000)
-    return
     selecter = "#composer > div > div.Composer-content > div > div.ComposerBody-content > div > div > ul > li.item-submit.App-primaryControl > button > span"
     await page.waitForSelector(selecter,{ timeout: 10000 })
     await page.click(selecter)

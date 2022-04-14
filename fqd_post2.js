@@ -32,7 +32,7 @@ async function autoPost(page) {
     await page.setCookie(...cookies);
     console.log("写入cookies");
     let selecter = '';
-    await page.goto('https://fanqiangdang.com/forum.php',{timeout: 60000})
+    await page.goto('https://fanqiangdang.com/forum.php',{timeout: 20000})
     .catch(error => console.log('首页超时'));
     console.log("等待首页");
     await page.waitForFunction(
@@ -43,7 +43,7 @@ async function autoPost(page) {
                 return false;
             }
         },
-        { timeout: 60000 },
+        { timeout: 20000 },
         'body'
     )
         .then(async () => { console.log("无5秒盾"); await sleep(1000); })

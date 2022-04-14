@@ -1,24 +1,10 @@
 [
 	{
-		"name": "flarum_remember",
-		"value": "8YaN4wigm0nUb92VuoqpQR42NfoWKmRBBGjAORFX",
-		"domain": "vpnse.org",
-		"path": "/",
-		"expires": -1,
-		"size": 55,
-		"httpOnly": true,
-		"secure": true,
-		"session": true,
-		"sameParty": false,
-		"sourceScheme": "Secure",
-		"sourcePort": 443
-	},
-	{
 		"name": "flarum_session",
-		"value": "mwlHgrrUT7JCoBdtb9xEIkEWt4PJpFJmxRSLkt38",
+		"value": "L3F5gOSIWQvyQ4v71jJ8VZ0Oa1XqU25QOuvoAB8f",
 		"domain": "vpnse.org",
 		"path": "/",
-		"expires": 1649858185.48817,
+		"expires": 1649986834.883122,
 		"size": 54,
 		"httpOnly": true,
 		"secure": true,
@@ -27,6 +13,20 @@
 		"sameParty": false,
 		"sourceScheme": "Secure",
 		"sourcePort": 443
+	},
+	{
+		"name": "_ga",
+		"value": "GA1.1.470236559.1649400371",
+		"domain": ".vpnse.org",
+		"path": "/",
+		"expires": -1,
+		"size": 29,
+		"httpOnly": false,
+		"secure": false,
+		"session": true,
+		"sameParty": false,
+		"sourceScheme": "NonSecure",
+		"sourcePort": 80
 	},
 	{
 		"name": "_ga_8B2ENCJKBL",
@@ -43,17 +43,17 @@
 		"sourcePort": 80
 	},
 	{
-		"name": "_ga",
-		"value": "GA1.1.470236559.1649400371",
-		"domain": ".vpnse.org",
+		"name": "flarum_remember",
+		"value": "8YaN4wigm0nUb92VuoqpQR42NfoWKmRBBGjAORFX",
+		"domain": "vpnse.org",
 		"path": "/",
 		"expires": -1,
-		"size": 29,
-		"httpOnly": false,
-		"secure": false,
+		"size": 55,
+		"httpOnly": true,
+		"secure": true,
 		"session": true,
 		"sameParty": false,
-		"sourceScheme": "NonSecure",
-		"sourcePort": 80
+		"sourceScheme": "Secure",
+		"sourcePort": 443
 	}
 ]

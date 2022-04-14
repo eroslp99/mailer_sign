@@ -8,7 +8,6 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
 const { tFormat, sleep, clearBrowser, getRndInteger, randomOne, randomString } = require('./common.js');
 const { sbFreeok,login,loginWithCookies,resetPwd } = require('./utils.js');
-const { cookie } = require("request");
 Date.prototype.format = tFormat;
 const runId = github.context.runId;
 const ckfile = './fqd.json'
@@ -34,7 +33,7 @@ async function autoPost(page) {
     await page.setCookie(...cookies);
     console.log("写入cookies");
     let selecter = '';
-    await page.goto('https://fanqiangdang.com/forum.php',{timeout: 60000})
+    await page.goto('https://fanqiangdang.com/forum.php',{timeout: 20000})
     .catch(error => console.log('首页超时'));
     console.log("等待首页");
     await page.waitForFunction(
@@ -45,7 +44,7 @@ async function autoPost(page) {
                 return false;
             }
         },
-        { timeout: 60000 },
+        { timeout: 20000 },
         'body'
     )
         .then(async () => { console.log("无5秒盾"); await sleep(1000); })
@@ -161,7 +160,7 @@ async function main() {
     page.on('dialog', async dialog => {
         //console.info(`➞ ${dialog.message()}`);
         await dialog.dismiss();
-    });
+    })
     await page.setRequestInterception(true);
       // permissions设置
     await page.evaluateOnNewDocument(() => {
