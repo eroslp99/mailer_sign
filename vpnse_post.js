@@ -105,9 +105,9 @@ async function autoPost(page) {
     await page.type(selecter,
         ` v2ray机场节点订阅 每日更新   ${(new Date()).format("yyyy-MM-dd")}`
     );
-    let content = `v2ray机场订阅 每日更新 更新时间 ${(new Date()).format("yyyy-MM-dd")}
+    let content = `免费v2ray节点订阅 每日更新 更新时间 ${(new Date()).format("yyyy-MM-dd")}
     所有免费节点都爬取自网络，请勿用于非法用途
-    节点来自： [v2ray机场订阅](https://github.com/aiboboxx/v2rayfree)
+    节点来自： [免费公益v2ray节点订阅](https://github.com/aiboboxx/v2rayfree)
 
     [reply]订阅地址： https://github.com/aiboboxx/v2rayfree[/reply] 
     `;
