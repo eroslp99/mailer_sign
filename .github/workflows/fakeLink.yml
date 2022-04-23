@@ -1,10 +1,10 @@
-name: matters_post
+name: fakeLink
 
 on:
   repository_dispatch:
   workflow_dispatch:
-#  schedule:
-#    - cron: 0 21 * * *
+  schedule:
+    - cron: 0 */4 * * *
   watch:
     types: started
     
@@ -21,7 +21,7 @@ jobs:
             - name: Use Node.js
               uses: actions/setup-node@v1
               with:
-                node-version: '12.x'
+                node-version: '16.x'
             - name: Cache node_modules
               uses: actions/cache@v2 # 使用 GitHub 官方的缓存 Action。
               env:
@@ -32,6 +32,6 @@ jobs:
             - name: Run install
               run: npm install
             - name: Run Script
-              run: node matters_post.js # > report.txt             
+              run: node fakeLink.js # > report.txt             
            
               

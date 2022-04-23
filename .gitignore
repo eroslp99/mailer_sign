@@ -104,6 +104,7 @@ dist
 .tern-port
 
 #customize
+*.bat
 .vscode/
 setup.json
 .history/

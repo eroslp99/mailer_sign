@@ -204,7 +204,7 @@ async function main() {
         console.log('fqd发帖成功');
     })
     .catch(error => console.log('执行失败：', error.message));
-    //sqlite.close();
-    if (runId ? true : false) await browser.close();
+    //if (runId ? true : false) await browser.close();
+    await browser.close();
 }
 main();
