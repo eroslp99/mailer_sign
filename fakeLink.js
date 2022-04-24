@@ -33,7 +33,6 @@ async function main() {
     })
     const urls = [
         'https://twodh.vip/',
-        'https://www.888slw.com/',
     ]
     for (let target of urls){
         await clickLink(page,target)
