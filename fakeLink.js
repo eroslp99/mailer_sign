@@ -14,7 +14,7 @@ async function main() {
         ignoreHTTPSErrors: true,
     })
     const page = await browser.newPage();
-    await page.goto('https://www.v2rayfree.eu.org/', { timeout: 8000 })
+    await page.goto('https://www.v2rayfree.eu.org/post/links/', { timeout: 8000 })
         .catch(async (error) => { console.log('error: ', error.message) })
     //await sleep(2000)
     const injectedScript = `
@@ -33,6 +33,7 @@ async function main() {
     })
     const urls = [
         'https://twodh.vip/',
+        'http://aa11dh.xyz/'
     ]
     for (let target of urls){
         await clickLink(page,target)
