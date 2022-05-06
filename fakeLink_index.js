@@ -27,7 +27,7 @@ async function main() {
         ignoreHTTPSErrors: true,
     })
     const page = await browser.newPage();
-    await page.goto('https://www.v2rayfree.eu.org/', { timeout: 18000 })
+    await page.goto('https://www.v2rayfree.eu.org/', { timeout: 30000 })
         .catch(async (error) => { console.log('error: ', error.message) })
     //await sleep(2000)
     const injectedScript = `
@@ -44,11 +44,15 @@ async function main() {
         //插入到最前面
         document.body.insertBefore(div, document.body.firstElementChild)
     })
-    const links = [
-        'https://www.lezy.cn'
-
-    ]
+/*     const urls = [
+        'https://twodh.vip/',
+        'http://aa11dh.xyz/'
+    ] */
+    const links = await page.$$eval('#links a',
+        (links) => links.map((link) => link.href))
+    //console.log(links.length)
     for (let link of links){
+        //await clickLink(page,link)
         await clickToNewpage(page,link)
             .catch(async (error) => { console.log('error: ', error.message) })
         await sleep(1000)
@@ -62,13 +66,13 @@ async function main() {
         const [popup] = await Promise.all([
             new Promise((resolve) => page.once('popup', async p => {
               await p.waitForNavigation({ waitUntil: 'networkidle0',timeout: 8000 })
-                .catch(async (error) => { console.log('waitForNavigation error: ', error.message) })
+              .catch(async (error) => { console.log('error: ', error.message) })
               resolve(p);
             })),
             link.click(),
           ])
           console.log("点击链接：",target)
-          await popup.waitForSelector("body",{timeout: 8000 })
+          await popup.waitForSelector("body",{ timeout: 8000 })
           await popup.close()
     }
 }

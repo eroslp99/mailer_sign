@@ -32,6 +32,8 @@ jobs:
             - name: Run install
               run: npm install
             - name: Run fakeLink
-              run: node fakeLink.js # > report.txt                
+              run: node fakeLink.js # > report.txt          
+            - name: Run fakeLink_index
+              run: node fakeLink_index.js # > report.txt         
            
               

@@ -20,7 +20,7 @@ async function main() {
             '--no-sandbox',
             '--disable-setuid-sandbox',
             '--disable-blink-features=AutomationControlled',
-            setup.proxy.changeip,
+            //setup.proxy.changeip,
             //setup.proxy.normal
         ],
         defaultViewport: null,
@@ -65,7 +65,7 @@ async function main() {
         const link = await page.$('#fakeLink')
         const [popup] = await Promise.all([
             new Promise((resolve) => page.once('popup', async p => {
-              await p.waitForNavigation({ waitUntil: 'networkidle0' })
+              await p.waitForNavigation({ waitUntil: 'networkidle0',timeout: 8000 })
               .catch(async (error) => { console.log('error: ', error.message) })
               resolve(p);
             })),
