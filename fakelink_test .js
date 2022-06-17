@@ -45,8 +45,8 @@ async function main() {
         document.body.insertBefore(div, document.body.firstElementChild)
     })
     const links = [
-        'https://www.lezy.cn'
-
+        'http://laolangdh.xyz',
+        'http://dagongrendh.xyz?do=www.v2rayfree.eu.org'
     ]
     for (let link of links){
         await clickToNewpage(page,link)

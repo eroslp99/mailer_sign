@@ -146,45 +146,26 @@ async function main() {
         headless: runId ? true : false,
         //headless: true,
         args: [
-            '--window-size=1920,1080',
-            '--ignore-certificate-errors',
-            '--ignore-certificate-errors-spki-list ',
-            setup.proxy.changeip,
+      '--window-size=1920,1080',
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-blink-features=AutomationControlled',
+      //runId ? '' : setup.proxy.changeip,
+      runId ? '' :setup.proxy.normal
             //setup.proxy.normal  
         ],
         defaultViewport: null,
-        ignoreHTTPSErrors: true,
+        ignoreHTTPSErrors: true
     });
     const page = await browser.newPage();
+  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36');
     await page.authenticate({username:setup.proxy.usr, password:setup.proxy.pwd});
     page.on('dialog', async dialog => {
         //console.info(`➞ ${dialog.message()}`);
         await dialog.dismiss();
     })
     await page.setRequestInterception(true);
-      // permissions设置
-    await page.evaluateOnNewDocument(() => {
-    const originalQuery = window.navigator.permissions.query; //notification伪装
-    window.navigator.permissions.query = (parameters) =>
-        parameters.name === 'notifications'
-        ? Promise.resolve({ state: Notification.permission })
-        : originalQuery(parameters);
-  });
-      // WebGL设置
-    await page.evaluateOnNewDocument(() => {
-        const getParameter = WebGLRenderingContext.getParameter;
-        WebGLRenderingContext.prototype.getParameter = function (parameter) {
-            // UNMASKED_VENDOR_WEBGL
-            if (parameter === 37445) {
-                return 'Intel Inc.';
-            }
-            // UNMASKED_RENDERER_WEBGL
-            if (parameter === 37446) {
-                return 'Intel(R) Iris(TM) Graphics 6100';
-            }
-            return getParameter(parameter);
-        };
-    });
+
     //监听每一次请求，形参为请求对象
     page.on('request',(interceptedRequest)=>{
         //ite.url()获取请求url地址
