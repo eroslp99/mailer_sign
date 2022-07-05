@@ -3,8 +3,8 @@ name: fqd_post2
 on:
   repository_dispatch:
   workflow_dispatch:
-  schedule:
-    - cron: '0 6,12,13 * * *'
+  #schedule:
+  #  - cron: '0 6,12,13 * * *'
   watch:
     types: started
     
